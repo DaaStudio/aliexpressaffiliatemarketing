@@ -129,7 +129,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             margin-bottom: 30px;
-            display: none; /* Varsayılan olarak gizli */
+            display: none;
         }
 
         .status-info.success {
@@ -163,6 +163,41 @@
             background: #3a5fdf;
         }
 
+        /* Categories Section */
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 71, 71, 0.3);
+        }
+
+        .category-btn i {
+            font-size: 1.1rem;
+        }
+
         /* Filter Section */
         .filters {
             display: flex;
@@ -189,9 +224,9 @@
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: var(--primary);
+            background: var(--secondary);
             color: white;
-            border-color: var(--primary);
+            border-color: var(--secondary);
         }
 
         .sort-select {
@@ -240,6 +275,18 @@
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--secondary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
@@ -379,7 +426,7 @@
         .load-more {
             text-align: center;
             margin: 30px 0;
-            display: none; /* Varsayılan olarak gizli */
+            display: none;
         }
 
         /* Footer */
@@ -442,6 +489,16 @@
                 font-size: 2rem;
             }
             
+            .categories {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .category-btn {
+                white-space: nowrap;
+            }
+            
             .filters {
                 flex-direction: column;
             }
@@ -498,6 +555,11 @@
 
     <!-- Main Content -->
     <main class="container" id="main-content" style="display: none;">
+        <!-- Categories -->
+        <section class="categories" id="categories">
+            <!-- Kategori butonları buraya dinamik olarak eklenecek -->
+        </section>
+
         <!-- Filters -->
         <section class="filters">
             <div class="filter-group">
@@ -581,6 +643,7 @@
         const productsPerPage = 12;
         let currentFilter = 'all';
         let currentSort = 'default';
+        let currentCategory = 'all';
         let isLoading = false;
         let hasMoreProducts = true;
 
@@ -592,9 +655,22 @@
         const statusInfo = document.getElementById('status-info');
         const mainContent = document.getElementById('main-content');
         const loadingIndicator = document.getElementById('loading-indicator');
+        const categoriesContainer = document.getElementById('categories');
 
         // Excel dosyasının URL'si - GitHub Pages için
         const EXCEL_FILE_URL = './linkler.xls';
+
+        // Kategori ikonları
+        const categoryIcons = {
+            'Elektronik': 'fas fa-mobile-alt',
+            'Giyim': 'fas fa-tshirt',
+            'Ev & Yaşam': 'fas fa-home',
+            'Spor': 'fas fa-running',
+            'Kozmetik': 'fas fa-palette',
+            'Oyuncak': 'fas fa-gamepad',
+            'Aksesuar': 'fas fa-gem',
+            'Diğer': 'fas fa-box'
+        };
 
         // Event Listeners
         searchBtn.addEventListener('click', performSearch);
@@ -615,6 +691,60 @@
                 filterAndDisplayProducts();
             });
         });
+
+        // Otomatik kategori tespit fonksiyonu
+        function autoDetectCategory(title) {
+            if (!title) return 'Diğer';
+            
+            const titleLower = title.toLowerCase();
+            
+            if (titleLower.includes('telefon') || titleLower.includes('phone') || 
+                titleLower.includes('kulaklık') || titleLower.includes('headphone') ||
+                titleLower.includes('tablet') || titleLower.includes('laptop') ||
+                titleLower.includes('akıllı saat') || titleLower.includes('smartwatch') ||
+                titleLower.includes('kamera') || titleLower.includes('camera')) {
+                return 'Elektronik';
+            }
+            if (titleLower.includes('giyim') || titleLower.includes('clothing') ||
+                titleLower.includes('ayakkabı') || titleLower.includes('shoe') ||
+                titleLower.includes('tişört') || titleLower.includes('t-shirt') ||
+                titleLower.includes('pantolon') || titleLower.includes('pants') ||
+                titleLower.includes('elbise') || titleLower.includes('dress')) {
+                return 'Giyim';
+            }
+            if (titleLower.includes('ev') || titleLower.includes('home') ||
+                titleLower.includes('mobilya') || titleLower.includes('furniture') ||
+                titleLower.includes('mutfak') || titleLower.includes('kitchen') ||
+                titleLower.includes('dekorasyon') || titleLower.includes('decoration') ||
+                titleLower.includes('banyo') || titleLower.includes('bath')) {
+                return 'Ev & Yaşam';
+            }
+            if (titleLower.includes('spor') || titleLower.includes('sport') ||
+                titleLower.includes('fitness') || titleLower.includes('egzersiz') ||
+                titleLower.includes('yoga') || titleLower.includes('koşu') ||
+                titleLower.includes('bisiklet') || titleLower.includes('bicycle')) {
+                return 'Spor';
+            }
+            if (titleLower.includes('kozmetik') || titleLower.includes('beauty') ||
+                titleLower.includes('makyaj') || titleLower.includes('makeup') ||
+                titleLower.includes('cilt bakım') || titleLower.includes('skincare') ||
+                titleLower.includes('parfüm') || titleLower.includes('perfume')) {
+                return 'Kozmetik';
+            }
+            if (titleLower.includes('oyuncak') || titleLower.includes('toy') ||
+                titleLower.includes('bebek') || titleLower.includes('baby') ||
+                titleLower.includes('lego') || titleLower.includes('puzzle')) {
+                return 'Oyuncak';
+            }
+            if (titleLower.includes('takı') || titleLower.includes('jewelry') ||
+                titleLower.includes('saat') || titleLower.includes('watch') ||
+                titleLower.includes('çanta') || titleLower.includes('bag') ||
+                titleLower.includes('aksesuar') || titleLower.includes('accessory')) {
+                return 'Aksesuar';
+            }
+            
+            return 'Diğer';
+        }
 
         // Scroll handler for infinite loading
         function handleScroll() {
@@ -666,9 +796,10 @@
         // Excel verilerini işle
         function processExcelData(data) {
             allProducts = data.map(item => {
+                const title = item['Product Desc'] || item.productDesc || item.title || '';
                 return {
-                    id: item.ProductId || item.productId || '',
-                    title: item['Product Desc'] || item.productDesc || item.title || '',
+                    id: item.ProductId || item.productId || Math.random().toString(36).substr(2, 9),
+                    title: title,
                     image: item['Image Url'] || item.imageUrl || item.image || '',
                     originalPrice: item['Origin Price'] || item.originPrice || item.originalPrice || '',
                     discountPrice: item['Discount Price'] || item.discountPrice || item.price || '',
@@ -676,10 +807,14 @@
                     code: item['Code Name'] || item.codeName || item.code || '',
                     link: item['Promotion Url'] || item.promotionUrl || item.link || item.url || '',
                     rating: item['Positive Feedback'] || item.positiveFeedback || item.rating || '',
-                    sales: item.Sales180Day || item.sales180Day || item.sales || 0
+                    sales: item.Sales180Day || item.sales180Day || item.sales || 0,
+                    category: item.Category || item.category || autoDetectCategory(title)
                 };
             }).filter(product => product.id && product.title);
 
+            // Kategori filtrelerini oluştur
+            createCategoryFilters();
+            
             // Display'i resetle
             displayedProducts = 0;
             productsGrid.innerHTML = '';
@@ -692,6 +827,39 @@
             mainContent.style.display = 'block';
         }
 
+        // Kategori filtrelerini oluştur
+        function createCategoryFilters() {
+            const categories = [...new Set(allProducts.map(product => product.category))];
+            
+            const categoryButtons = categories.map(category => {
+                const icon = categoryIcons[category] || 'fas fa-box';
+                return `
+                    <button class="category-btn" data-category="${category}">
+                        <i class="${icon}"></i>
+                        ${category}
+                    </button>
+                `;
+            }).join('');
+
+            categoriesContainer.innerHTML = `
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    Tüm Kategoriler
+                </button>
+                ${categoryButtons}
+            `;
+
+            // Kategori butonlarına event listener ekle
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentCategory = button.dataset.category;
+                    filterAndDisplayProducts();
+                });
+            });
+        }
+
         // Daha fazla ürün yükle
         function loadMoreProducts() {
             if (isLoading || !hasMoreProducts) return;
@@ -699,7 +867,7 @@
             isLoading = true;
             loadingIndicator.style.display = 'block';
             
-            // Simüle edilmiş yükleme gecikmesi (gerçek uygulamada kaldırılabilir)
+            // Simüle edilmiş yükleme gecikmesi
             setTimeout(() => {
                 const productsToShow = allProducts.slice(displayedProducts, displayedProducts + productsPerPage);
                 
@@ -730,9 +898,13 @@
                 productCard.className = 'product-card';
                 
                 const imageUrl = product.image || 'https://via.placeholder.com/300x200?text=Resim+Yok';
+                const categoryIcon = categoryIcons[product.category] || 'fas fa-box';
                 
                 productCard.innerHTML = `
                     <div class="product-badge">${product.discount} İNDİRİM</div>
+                    <div class="category-badge">
+                        <i class="${categoryIcon}"></i> ${product.category}
+                    </div>
                     <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Resim+Yok'">
                     <div class="product-info">
                         <h3 class="product-title">${product.title}</h3>
@@ -765,6 +937,14 @@
         function filterAndDisplayProducts() {
             let filteredProducts = [...allProducts];
             
+            // Kategori filtresi
+            if (currentCategory !== 'all') {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.category === currentCategory
+                );
+            }
+            
+            // Diğer filtreler
             switch(currentFilter) {
                 case 'high-discount':
                     filteredProducts = filteredProducts.filter(product => {
@@ -854,7 +1034,8 @@
             }
             
             const filteredProducts = allProducts.filter(product => 
-                product.title.toLowerCase().includes(searchTerm)
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
             );
             
             displayedProducts = 0;
