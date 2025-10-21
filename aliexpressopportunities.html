@@ -1129,53 +1129,6 @@
             }
         };
 
-        // Ülke listesi
-        const countries = [
-            "United States", "Spain", "France", "United Kingdom", "Brazil", "Korea", 
-            "Saudi Arabia", "Israel", "Netherlands", "Canada", "Italy", "Chile", 
-            "Ukraine", "Poland", "Australia", "Afghanistan", "Aland Islands", 
-            "Albania", "Alderney", "Algeria", "American Samoa", "Andorra", "Angola", 
-            "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", 
-            "Ascension Island", "Austria", "Azerbaijan", "Bahamas", "Bahrain", 
-            "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", 
-            "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", 
-            "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", 
-            "Cape Verde", "Caribbean Netherlands", "Cayman Islands", "Central African Republic", 
-            "Chad", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", 
-            "Congo, The Democratic Republic Of The", "Congo, The Republic of Congo", 
-            "Cook Islands", "Costa Rica", "Cote D'Ivoire", "Croatia (local name: Hrvatska)", 
-            "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", 
-            "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", 
-            "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)", "Faroe Islands", 
-            "Fiji", "Finland", "French Guiana", "French Polynesia", "Gabon", "Gambia", 
-            "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", 
-            "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", 
-            "Guyana", "Haiti", "Honduras", "Hong Kong,China", "Hungary", "Iceland", 
-            "Iraq", "Ireland", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", 
-            "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", 
-            "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", 
-            "Luxembourg", "Macau,China", "Macedonia", "Madagascar", "Malawi", "Malaysia", 
-            "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", 
-            "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", 
-            "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", 
-            "Nauru", "Nepal", "Netherlands Antilles", "New Caledonia", "New Zealand", 
-            "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "Northern Mariana Islands", 
-            "Norway", "Oman", "Other Country", "Pakistan", "Palau", "Palestine", "Panama", 
-            "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Portugal", "Puerto Rico", 
-            "Qatar", "Reunion", "Romania", "Russian Federation", "Rwanda", "Saint Barthelemy", 
-            "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin", "Saint Vincent and the Grenadines", 
-            "Samoa", "San Marino", "Sao Tome and Principe", "Senegal", "Serbia", "Seychelles", 
-            "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia (Slovak Republic)", 
-            "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", 
-            "South Sudan", "Sri Lanka", "St. Pierre and Miquelon", "Suriname", "Swaziland", 
-            "Sweden", "Switzerland", "Taiwan,China", "Tajikistan", "Tanzania", "Thailand", 
-            "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", 
-            "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "United Arab Emirates", 
-            "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City State (Holy See)", "Venezuela", 
-            "Vietnam", "Virgin Islands (British)", "Virgin Islands (U.S.)", "Wallis And Futuna Islands", 
-            "Yemen", "Zambia", "Zanzibar", "Zimbabwe"
-        ];
-
         // Kategori ikonları
         const categoryIcons = {
             'Elektronik': 'fas fa-mobile-alt',
@@ -1206,6 +1159,23 @@
         // Scroll event for infinite loading
         window.addEventListener('scroll', handleScroll);
 
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentFilter = button.dataset.filter;
+                
+                if (currentFilter === 'favorites') {
+                    favoritesManagement.classList.add('show');
+                } else {
+                    favoritesManagement.classList.remove('show');
+                }
+                
+                filterAndDisplayProducts();
+            });
+        });
+
         // Dil değiştirme
         function changeLanguage(lang) {
             currentLanguage = lang;
@@ -1220,7 +1190,11 @@
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
                 if (translations[currentLanguage] && translations[currentLanguage][key]) {
-                    element.textContent = translations[currentLanguage][key];
+                    if (element.tagName === 'INPUT') {
+                        element.placeholder = translations[currentLanguage][key];
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
                 }
             });
             updateFavoritesCount();
@@ -1301,13 +1275,16 @@
             updateFavoritesCount();
             const favoriteButtons = document.querySelectorAll('.wishlist-btn');
             favoriteButtons.forEach(btn => {
-                const productId = btn.closest('.product-card').dataset.productId;
-                if (favorites.includes(productId)) {
-                    btn.classList.add('active');
-                    btn.innerHTML = '<i class="fas fa-heart"></i>';
-                } else {
-                    btn.classList.remove('active');
-                    btn.innerHTML = '<i class="far fa-heart"></i>';
+                const productCard = btn.closest('.product-card');
+                if (productCard) {
+                    const productId = productCard.dataset.productId;
+                    if (favorites.includes(productId)) {
+                        btn.classList.add('active');
+                        btn.innerHTML = '<i class="fas fa-heart"></i>';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.innerHTML = '<i class="far fa-heart"></i>';
+                    }
                 }
             });
         }
@@ -1366,27 +1343,513 @@
             }, 3000);
         }
 
-        // Filter buttons event listeners
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                currentFilter = button.dataset.filter;
-                
-                if (currentFilter === 'favorites') {
-                    favoritesManagement.classList.add('show');
+        // Otomatik kategori tespit fonksiyonu
+        function autoDetectCategory(title) {
+            if (!title) return 'Diğer';
+            
+            const titleLower = title.toLowerCase();
+            
+            if (titleLower.includes('telefon') || titleLower.includes('phone') || 
+                titleLower.includes('kulaklık') || titleLower.includes('headphone') ||
+                titleLower.includes('tablet') || titleLower.includes('laptop') ||
+                titleLower.includes('akıllı saat') || titleLower.includes('smartwatch') ||
+                titleLower.includes('kamera') || titleLower.includes('camera') ||
+                titleLower.includes('şarj') || titleLower.includes('charger') ||
+                titleLower.includes('power bank') || titleLower.includes('powerbank')) {
+                return 'Elektronik';
+            }
+            
+            if (titleLower.includes('giyim') || titleLower.includes('clothing') ||
+                titleLower.includes('ayakkabı') || titleLower.includes('shoe') ||
+                titleLower.includes('tişört') || titleLower.includes('t-shirt') ||
+                titleLower.includes('pantolon') || titleLower.includes('pants') ||
+                titleLower.includes('elbise') || titleLower.includes('dress') ||
+                titleLower.includes('ceket') || titleLower.includes('jacket') ||
+                titleLower.includes('kazak') || titleLower.includes('sweater')) {
+                return 'Giyim';
+            }
+            
+            if (titleLower.includes('ev') || titleLower.includes('home') ||
+                titleLower.includes('mobilya') || titleLower.includes('furniture') ||
+                titleLower.includes('mutfak') || titleLower.includes('kitchen') ||
+                titleLower.includes('dekorasyon') || titleLower.includes('decoration') ||
+                titleLower.includes('banyo') || titleLower.includes('bath') ||
+                titleLower.includes('yatak') || titleLower.includes('bed') ||
+                titleLower.includes('halı') || titleLower.includes('carpet')) {
+                return 'Ev & Yaşam';
+            }
+            
+            if (titleLower.includes('spor') || titleLower.includes('sport') ||
+                titleLower.includes('fitness') || titleLower.includes('egzersiz') ||
+                titleLower.includes('yoga') || titleLower.includes('koşu') ||
+                titleLower.includes('bisiklet') || titleLower.includes('bicycle') ||
+                titleLower.includes('futbol') || titleLower.includes('football') ||
+                titleLower.includes('basketbol') || titleLower.includes('basketball')) {
+                return 'Spor';
+            }
+            
+            if (titleLower.includes('kozmetik') || titleLower.includes('beauty') ||
+                titleLower.includes('makyaj') || titleLower.includes('makeup') ||
+                titleLower.includes('cilt bakım') || titleLower.includes('skincare') ||
+                titleLower.includes('parfüm') || titleLower.includes('perfume') ||
+                titleLower.includes('ruj') || titleLower.includes('lipstick') ||
+                titleLower.includes('fondöten') || titleLower.includes('foundation')) {
+                return 'Kozmetik';
+            }
+            
+            if (titleLower.includes('oyuncak') || titleLower.includes('toy') ||
+                titleLower.includes('bebek') || titleLower.includes('baby') ||
+                titleLower.includes('lego') || titleLower.includes('puzzle') ||
+                titleLower.includes('peluş') || titleLower.includes('plush') ||
+                titleLower.includes('arab') || titleLower.includes('car')) {
+                return 'Oyuncak';
+            }
+            
+            if (titleLower.includes('takı') || titleLower.includes('jewelry') ||
+                titleLower.includes('saat') || titleLower.includes('watch') ||
+                titleLower.includes('çanta') || titleLower.includes('bag') ||
+                titleLower.includes('aksesuar') || titleLower.includes('accessory') ||
+                titleLower.includes('kolye') || titleLower.includes('necklace') ||
+                titleLower.includes('küpe') || titleLower.includes('earring')) {
+                return 'Aksesuar';
+            }
+            
+            if (titleLower.includes('kitap') || titleLower.includes('book')) {
+                return 'Kitap';
+            }
+            
+            if (titleLower.includes('bahçe') || titleLower.includes('garden')) {
+                return 'Bahçe';
+            }
+            
+            if (titleLower.includes('ofis') || titleLower.includes('office')) {
+                return 'Ofis';
+            }
+            
+            if (titleLower.includes('market') || titleLower.includes('grocery') ||
+                titleLower.includes('süpermarket')) {
+                return 'Süpermarket';
+            }
+            
+            return 'Diğer';
+        }
+
+        // Scroll handler for infinite loading
+        function handleScroll() {
+            if (isLoading || !hasMoreProducts) return;
+
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            if (scrollTop + windowHeight >= documentHeight - 200) {
+                loadMoreProducts();
+            }
+        }
+
+        // Excel dosyasını yükle ve işle
+        async function loadExcelFile(forceRefresh = false) {
+            try {
+                if (forceRefresh) {
+                    showLoading('Excel dosyası yeniden yükleniyor...');
                 } else {
-                    favoritesManagement.classList.remove('show');
+                    showLoading('Excel dosyası yükleniyor...');
                 }
                 
-                filterAndDisplayProducts();
+                const response = await fetch(EXCEL_FILE_URL + '?t=' + Date.now());
+                
+                if (!response.ok) {
+                    throw new Error(`Excel dosyası bulunamadı: ${response.status}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const data = new Uint8Array(arrayBuffer);
+                
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                
+                if (jsonData.length > 0) {
+                    processExcelData(jsonData, forceRefresh);
+                    lastExcelCheck = Date.now();
+                } else {
+                    throw new Error('Excel dosyasında veri bulunamadı');
+                }
+                
+            } catch (error) {
+                console.error('Excel yükleme hatası:', error);
+                showError(`Ürünler yüklenirken hata oluştu: ${error.message}`);
+            }
+        }
+
+        // Excel verilerini işle
+        function processExcelData(data, forceRefresh = false) {
+            const newProducts = data.map(item => {
+                const title = item['Product Desc'] || item.productDesc || item.title || '';
+                return {
+                    id: item.ProductId || item.productId || Math.random().toString(36).substr(2, 9),
+                    title: title,
+                    image: item['Image Url'] || item.imageUrl || item.image || '',
+                    originalPrice: item['Origin Price'] || item.originPrice || item.originalPrice || '',
+                    discountPrice: item['Discount Price'] || item.discountPrice || item.price || '',
+                    discount: item.Discount || item.discount || '',
+                    code: item['Code Name'] || item.codeName || item.code || '',
+                    link: item['Promotion Url'] || item.promotionUrl || item.link || item.url || '',
+                    rating: item['Positive Feedback'] || item.positiveFeedback || item.rating || '',
+                    sales: item.Sales180Day || item.sales180Day || item.sales || 0,
+                    category: item.Category || item.category || autoDetectCategory(title)
+                };
+            }).filter(product => product.id && product.title);
+
+            if (forceRefresh || hasProductsChanged(newProducts)) {
+                allProducts = newProducts;
+                originalProducts = [...allProducts];
+                
+                updateCategoryFilters();
+                resetDisplay();
+                loadMoreProducts();
+                mainContent.style.display = 'block';
+                statusInfo.style.display = 'none';
+                
+                console.log('Ürünler güncellendi. Yeni ürün sayısı:', allProducts.length);
+            } else {
+                statusInfo.style.display = 'none';
+                console.log('Ürünler değişmedi.');
+            }
+        }
+
+        // Ürünlerin değişip değişmediğini kontrol et
+        function hasProductsChanged(newProducts) {
+            if (originalProducts.length !== newProducts.length) {
+                return true;
+            }
+            
+            for (let i = 0; i < Math.min(10, originalProducts.length); i++) {
+                if (originalProducts[i].id !== newProducts[i].id ||
+                    originalProducts[i].title !== newProducts[i].title) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Display'i sıfırla
+        function resetDisplay() {
+            displayedProducts = 0;
+            productsGrid.innerHTML = '';
+            hasMoreProducts = true;
+            loadingIndicator.style.display = 'none';
+        }
+
+        // Kategori filtrelerini güncelle
+        function updateCategoryFilters() {
+            const categories = [...new Set(allProducts.map(product => product.category))];
+            const currentCategories = Array.from(categoriesContainer.querySelectorAll('.category-btn'))
+                .map(btn => btn.dataset.category)
+                .filter(cat => cat !== 'all');
+            
+            const categoriesChanged = 
+                categories.length !== currentCategories.length ||
+                !categories.every(cat => currentCategories.includes(cat));
+            
+            if (categoriesChanged) {
+                createCategoryFilters();
+                
+                if (!categories.includes(currentCategory) && currentCategory !== 'all') {
+                    currentCategory = 'all';
+                    const allBtn = categoriesContainer.querySelector('.category-btn[data-category="all"]');
+                    if (allBtn) allBtn.classList.add('active');
+                }
+            }
+        }
+
+        // Kategori filtrelerini oluştur
+        function createCategoryFilters() {
+            const categories = [...new Set(allProducts.map(product => product.category))];
+            
+            const categoryButtons = categories.map(category => {
+                const icon = categoryIcons[category] || 'fas fa-box';
+                const productCount = allProducts.filter(p => p.category === category).length;
+                return `
+                    <button class="category-btn" data-category="${category}">
+                        <i class="${icon}"></i>
+                        ${category} (${productCount})
+                    </button>
+                `;
+            }).join('');
+
+            const totalProducts = allProducts.length;
+            categoriesContainer.innerHTML = `
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    Tüm Kategoriler (${totalProducts})
+                </button>
+                ${categoryButtons}
+            `;
+
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentCategory = button.dataset.category;
+                    filterAndDisplayProducts();
+                });
             });
-        });
+        }
 
-        // Kalan kodlar aynı kalacak, sadece favori özellikleri eklendi
-        // (Yukarıdaki kodda tüm fonksiyonlar mevcut, sadece space nedeniyle kısaltıldı)
+        // Daha fazla ürün yükle
+        function loadMoreProducts() {
+            if (isLoading || !hasMoreProducts) return;
+            
+            isLoading = true;
+            loadingIndicator.style.display = 'block';
+            
+            setTimeout(() => {
+                const productsToShow = allProducts.slice(displayedProducts, displayedProducts + productsPerPage);
+                
+                if (productsToShow.length === 0) {
+                    hasMoreProducts = false;
+                    loadingIndicator.style.display = 'none';
+                    isLoading = false;
+                    return;
+                }
+                
+                renderProducts(productsToShow);
+                displayedProducts += productsToShow.length;
+                
+                if (displayedProducts >= allProducts.length) {
+                    hasMoreProducts = false;
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                isLoading = false;
+            }, 500);
+        }
 
-        // Sayfa yüklendiğinde
+        // Ürünleri grid'e render et
+        function renderProducts(productsToRender) {
+            productsToRender.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.dataset.productId = product.id;
+                
+                const imageUrl = product.image || 'https://via.placeholder.com/300x200?text=Resim+Yok';
+                const categoryIcon = categoryIcons[product.category] || 'fas fa-box';
+                const isFavorite = favorites.includes(product.id);
+                
+                productCard.innerHTML = `
+                    <div class="product-image-container" onclick="window.open('${product.link}', '_blank')">
+                        <div class="product-badge">${product.discount} İNDİRİM</div>
+                        <div class="category-badge">
+                            <i class="${categoryIcon}"></i> ${product.category}
+                        </div>
+                        ${currentFilter === 'favorites' ? `
+                        <button class="remove-favorite-btn" onclick="removeFavorite('${product.id}', event)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        ` : ''}
+                        <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Resim+Yok'">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <div class="product-price">
+                            <span class="current-price">${product.discountPrice}</span>
+                            <span class="original-price">${product.originalPrice}</span>
+                            <span class="discount">${product.discount}</span>
+                        </div>
+                        ${product.code ? `
+                        <div class="product-code">
+                            <span class="code-label">İndirim Kodu:</span>
+                            <span class="code-value" onclick="copyCode('${product.code}', event)">${product.code} <i class="fas fa-copy"></i></span>
+                        </div>
+                        ` : ''}
+                        <div class="product-actions">
+                            <a href="${product.link}" target="_blank" class="buy-btn">
+                                <i class="fas fa-shopping-cart"></i> Hemen Al
+                            </a>
+                            <button class="wishlist-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${product.id}')">
+                                <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                            <button class="share-btn" onclick="shareProduct(${JSON.stringify(product).replace(/"/g, '&quot;')}, event)">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // İndirim kodunu kopyala
+        function copyCode(code, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const message = translations[currentLanguage].codeCopied + ' ' + code;
+                showToast(message);
+            }).catch(err => {
+                showToast('Kopyalama başarısız!');
+                console.error('Kopyalama hatası:', err);
+            });
+        }
+
+        // Filtrele ve göster
+        function filterAndDisplayProducts() {
+            let filteredProducts = [...originalProducts];
+            
+            // Kategori filtresi
+            if (currentCategory !== 'all') {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.category === currentCategory
+                );
+            }
+            
+            // Ana filtreler
+            switch(currentFilter) {
+                case 'high-discount':
+                    filteredProducts = filteredProducts.filter(product => {
+                        const discountValue = parseInt(product.discount) || 0;
+                        return discountValue >= 50;
+                    });
+                    break;
+                case 'best-seller':
+                    filteredProducts = filteredProducts.filter(product => {
+                        const sales = parseInt(product.sales) || 0;
+                        return sales >= 1000;
+                    });
+                    break;
+                case 'high-rating':
+                    filteredProducts = filteredProducts.filter(product => {
+                        const rating = parseFloat(product.rating) || 0;
+                        return rating >= 95;
+                    });
+                    break;
+                case 'favorites':
+                    filteredProducts = filteredProducts.filter(product => 
+                        favorites.includes(product.id)
+                    );
+                    break;
+            }
+            
+            applySorting(filteredProducts);
+            
+            allProducts = filteredProducts;
+            resetDisplay();
+            loadMoreProducts();
+        }
+
+        // Sıralama değişikliğini handle et
+        function handleSortChange() {
+            currentSort = sortSelect.value;
+            filterAndDisplayProducts();
+        }
+
+        // Ürünlere sıralama uygula
+        function applySorting(products) {
+            switch(currentSort) {
+                case 'price-low':
+                    products.sort((a, b) => {
+                        const priceA = extractPrice(a.discountPrice);
+                        const priceB = extractPrice(b.discountPrice);
+                        return priceA - priceB;
+                    });
+                    break;
+                case 'price-high':
+                    products.sort((a, b) => {
+                        const priceA = extractPrice(a.discountPrice);
+                        const priceB = extractPrice(b.discountPrice);
+                        return priceB - priceA;
+                    });
+                    break;
+                case 'discount':
+                    products.sort((a, b) => {
+                        const discountA = parseInt(a.discount) || 0;
+                        const discountB = parseInt(b.discount) || 0;
+                        return discountB - discountA;
+                    });
+                    break;
+                case 'rating':
+                    products.sort((a, b) => {
+                        const ratingA = parseFloat(a.rating) || 0;
+                        const ratingB = parseFloat(b.rating) || 0;
+                        return ratingB - ratingA;
+                    });
+                    break;
+            }
+            return products;
+        }
+
+        // String'den fiyatı çıkar
+        function extractPrice(priceStr) {
+            if (!priceStr) return 0;
+            const match = priceStr.toString().match(/[\d,.]+/);
+            return match ? parseFloat(match[0].replace(',', '.')) : 0;
+        }
+
+        // Arama yap
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                allProducts = [...originalProducts];
+                resetDisplay();
+                loadMoreProducts();
+                return;
+            }
+            
+            const filteredProducts = originalProducts.filter(product => 
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            
+            allProducts = filteredProducts;
+            resetDisplay();
+            loadMoreProducts();
+        }
+
+        // Durum mesajı fonksiyonları
+        function showLoading(message) {
+            statusInfo.className = 'status-info warning';
+            statusInfo.innerHTML = `
+                <h3><i class="fas fa-sync-alt fa-spin"></i> ${message}</h3>
+                <p>Lütfen bekleyin...</p>
+            `;
+            statusInfo.style.display = 'block';
+        }
+
+        function showError(message) {
+            statusInfo.className = 'status-info error';
+            statusInfo.innerHTML = `
+                <h3><i class="fas fa-exclamation-circle"></i> Hata</h3>
+                <p>${message}</p>
+                <p>
+                   <button class="refresh-btn" onclick="refreshProducts()">
+                       <i class="fas fa-sync-alt"></i> Tekrar Dene
+                   </button>
+                </p>
+            `;
+            statusInfo.style.display = 'block';
+        }
+
+        // Ürünleri yenile
+        function refreshProducts() {
+            loadExcelFile(true);
+        }
+
+        // Excel dosyasını periyodik olarak kontrol et
+        function checkForExcelUpdates() {
+            const now = Date.now();
+            if (now - lastExcelCheck > EXCEL_CHECK_INTERVAL) {
+                console.log('Excel dosyası kontrol ediliyor...');
+                loadExcelFile();
+            }
+        }
+
+        // Sayfa yüklendiğinde Excel dosyasını otomatik yükle
         window.addEventListener('DOMContentLoaded', () => {
             createLanguageOptions();
             updatePageLanguage();
@@ -1394,9 +1857,13 @@
             setInterval(checkForExcelUpdates, 10000);
         });
 
-        // Kalan tüm fonksiyonlar önceki kodda mevcut
-        // (autoDetectCategory, handleScroll, loadExcelFile, processExcelData, vs.)
-        // Bu fonksiyonlar önceki cevaptaki gibi aynen kalacak
+        // Dışarıdan erişilebilir fonksiyonlar
+        window.changeLanguage = changeLanguage;
+        window.toggleFavorite = toggleFavorite;
+        window.removeFavorite = removeFavorite;
+        window.shareProduct = shareProduct;
+        window.copyCode = copyCode;
+        window.refreshProducts = refreshProducts;
 
     </script>
 </body>
