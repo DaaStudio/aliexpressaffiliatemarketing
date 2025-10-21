@@ -39,6 +39,35 @@
             padding: 0 20px;
         }
 
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
         /* Header Styles */
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -252,6 +281,7 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             position: relative;
+            cursor: pointer;
         }
 
         .product-card:hover {
@@ -259,11 +289,21 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
         .product-image {
             height: 200px;
             width: 100%;
             object-fit: cover;
             display: block;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
         }
 
         .product-badge {
@@ -276,6 +316,7 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            z-index: 2;
         }
 
         .category-badge {
@@ -288,6 +329,7 @@
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
+            z-index: 2;
         }
 
         .product-info {
@@ -352,10 +394,14 @@
             color: var(--secondary);
             cursor: pointer;
             transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: white;
         }
 
         .code-value:hover {
             color: var(--primary);
+            background: #f8f9fa;
         }
 
         .product-actions {
@@ -506,6 +552,18 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
+
+            .toast {
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                transform: translateY(100px);
+                text-align: center;
+            }
+
+            .toast.show {
+                transform: translateY(0);
+            }
         }
 
         /* Animations */
@@ -521,6 +579,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">İndirim kodu kopyalandı!</span>
+    </div>
+
     <!-- Header -->
     <header>
         <div class="container">
@@ -648,7 +712,7 @@
         let hasMoreProducts = true;
         let originalProducts = [];
         let lastExcelCheck = 0;
-        const EXCEL_CHECK_INTERVAL = 30000; // 30 saniye
+        const EXCEL_CHECK_INTERVAL = 30000;
 
         // DOM Elements
         const productsGrid = document.getElementById('products');
@@ -659,11 +723,13 @@
         const mainContent = document.getElementById('main-content');
         const loadingIndicator = document.getElementById('loading-indicator');
         const categoriesContainer = document.getElementById('categories');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
 
         // Excel dosyasının URL'si - GitHub Pages için
         const EXCEL_FILE_URL = './linkler.xls';
 
-        // Kategori ikonları - Dinamik olarak genişletilebilir
+        // Kategori ikonları
         const categoryIcons = {
             'Elektronik': 'fas fa-mobile-alt',
             'Giyim': 'fas fa-tshirt',
@@ -700,13 +766,22 @@
             });
         });
 
-        // Otomatik kategori tespit fonksiyonu - Geliştirilmiş versiyon
+        // Toast bildirimi göster
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Otomatik kategori tespit fonksiyonu
         function autoDetectCategory(title) {
             if (!title) return 'Diğer';
             
             const titleLower = title.toLowerCase();
             
-            // Elektronik kategorisi
             if (titleLower.includes('telefon') || titleLower.includes('phone') || 
                 titleLower.includes('kulaklık') || titleLower.includes('headphone') ||
                 titleLower.includes('tablet') || titleLower.includes('laptop') ||
@@ -717,7 +792,6 @@
                 return 'Elektronik';
             }
             
-            // Giyim kategorisi
             if (titleLower.includes('giyim') || titleLower.includes('clothing') ||
                 titleLower.includes('ayakkabı') || titleLower.includes('shoe') ||
                 titleLower.includes('tişört') || titleLower.includes('t-shirt') ||
@@ -728,7 +802,6 @@
                 return 'Giyim';
             }
             
-            // Ev & Yaşam kategorisi
             if (titleLower.includes('ev') || titleLower.includes('home') ||
                 titleLower.includes('mobilya') || titleLower.includes('furniture') ||
                 titleLower.includes('mutfak') || titleLower.includes('kitchen') ||
@@ -739,7 +812,6 @@
                 return 'Ev & Yaşam';
             }
             
-            // Spor kategorisi
             if (titleLower.includes('spor') || titleLower.includes('sport') ||
                 titleLower.includes('fitness') || titleLower.includes('egzersiz') ||
                 titleLower.includes('yoga') || titleLower.includes('koşu') ||
@@ -749,7 +821,6 @@
                 return 'Spor';
             }
             
-            // Kozmetik kategorisi
             if (titleLower.includes('kozmetik') || titleLower.includes('beauty') ||
                 titleLower.includes('makyaj') || titleLower.includes('makeup') ||
                 titleLower.includes('cilt bakım') || titleLower.includes('skincare') ||
@@ -759,7 +830,6 @@
                 return 'Kozmetik';
             }
             
-            // Oyuncak kategorisi
             if (titleLower.includes('oyuncak') || titleLower.includes('toy') ||
                 titleLower.includes('bebek') || titleLower.includes('baby') ||
                 titleLower.includes('lego') || titleLower.includes('puzzle') ||
@@ -768,7 +838,6 @@
                 return 'Oyuncak';
             }
             
-            // Aksesuar kategorisi
             if (titleLower.includes('takı') || titleLower.includes('jewelry') ||
                 titleLower.includes('saat') || titleLower.includes('watch') ||
                 titleLower.includes('çanta') || titleLower.includes('bag') ||
@@ -778,7 +847,6 @@
                 return 'Aksesuar';
             }
             
-            // Yeni kategoriler eklenebilir...
             if (titleLower.includes('kitap') || titleLower.includes('book')) {
                 return 'Kitap';
             }
@@ -807,7 +875,6 @@
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
 
-            // Sayfanın sonuna 200px kala yükleme başlasın
             if (scrollTop + windowHeight >= documentHeight - 200) {
                 loadMoreProducts();
             }
@@ -822,7 +889,7 @@
                     showLoading('Excel dosyası yükleniyor...');
                 }
                 
-                const response = await fetch(EXCEL_FILE_URL + '?t=' + Date.now()); // Cache bypass
+                const response = await fetch(EXCEL_FILE_URL + '?t=' + Date.now());
                 
                 if (!response.ok) {
                     throw new Error(`Excel dosyası bulunamadı: ${response.status}`);
@@ -868,24 +935,14 @@
                 };
             }).filter(product => product.id && product.title);
 
-            // Yeni ürünleri kontrol et
             if (forceRefresh || hasProductsChanged(newProducts)) {
                 allProducts = newProducts;
                 originalProducts = [...allProducts];
                 
-                // Kategori filtrelerini güncelle
                 updateCategoryFilters();
-                
-                // Display'i resetle
                 resetDisplay();
-                
-                // İlk ürünleri yükle
                 loadMoreProducts();
-                
-                // Ana içeriği göster
                 mainContent.style.display = 'block';
-                
-                // Başarı mesajını gösterme - sadece hata durumunda göster
                 statusInfo.style.display = 'none';
                 
                 console.log('Ürünler güncellendi. Yeni ürün sayısı:', allProducts.length);
@@ -901,7 +958,6 @@
                 return true;
             }
             
-            // İlk 10 ürünü kontrol et (performans için)
             for (let i = 0; i < Math.min(10, originalProducts.length); i++) {
                 if (originalProducts[i].id !== newProducts[i].id ||
                     originalProducts[i].title !== newProducts[i].title) {
@@ -927,7 +983,6 @@
                 .map(btn => btn.dataset.category)
                 .filter(cat => cat !== 'all');
             
-            // Kategoriler değişti mi kontrol et
             const categoriesChanged = 
                 categories.length !== currentCategories.length ||
                 !categories.every(cat => currentCategories.includes(cat));
@@ -935,7 +990,6 @@
             if (categoriesChanged) {
                 createCategoryFilters();
                 
-                // Mevcut kategori seçili değilse "Tüm Kategoriler"e geç
                 if (!categories.includes(currentCategory) && currentCategory !== 'all') {
                     currentCategory = 'all';
                     document.querySelector('.category-btn[data-category="all"]').classList.add('active');
@@ -967,7 +1021,6 @@
                 ${categoryButtons}
             `;
 
-            // Kategori butonlarına event listener ekle
             document.querySelectorAll('.category-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
@@ -985,7 +1038,6 @@
             isLoading = true;
             loadingIndicator.style.display = 'block';
             
-            // Simüle edilmiş yükleme gecikmesi
             setTimeout(() => {
                 const productsToShow = allProducts.slice(displayedProducts, displayedProducts + productsPerPage);
                 
@@ -999,7 +1051,6 @@
                 renderProducts(productsToShow);
                 displayedProducts += productsToShow.length;
                 
-                // Tüm ürünler gösterildiyse loading indicator'ü gizle
                 if (displayedProducts >= allProducts.length) {
                     hasMoreProducts = false;
                     loadingIndicator.style.display = 'none';
@@ -1019,11 +1070,13 @@
                 const categoryIcon = categoryIcons[product.category] || 'fas fa-box';
                 
                 productCard.innerHTML = `
-                    <div class="product-badge">${product.discount} İNDİRİM</div>
-                    <div class="category-badge">
-                        <i class="${categoryIcon}"></i> ${product.category}
+                    <div class="product-image-container" onclick="window.open('${product.link}', '_blank')">
+                        <div class="product-badge">${product.discount} İNDİRİM</div>
+                        <div class="category-badge">
+                            <i class="${categoryIcon}"></i> ${product.category}
+                        </div>
+                        <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Resim+Yok'">
                     </div>
-                    <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Resim+Yok'">
                     <div class="product-info">
                         <h3 class="product-title">${product.title}</h3>
                         <div class="product-price">
@@ -1034,7 +1087,7 @@
                         ${product.code ? `
                         <div class="product-code">
                             <span class="code-label">İndirim Kodu:</span>
-                            <span class="code-value" onclick="copyCode('${product.code}')">${product.code} <i class="fas fa-copy"></i></span>
+                            <span class="code-value" onclick="copyCode('${product.code}', event)">${product.code} <i class="fas fa-copy"></i></span>
                         </div>
                         ` : ''}
                         <div class="product-actions">
@@ -1051,18 +1104,30 @@
             });
         }
 
+        // İndirim kodunu kopyala
+        function copyCode(code, event) {
+            if (event) {
+                event.stopPropagation(); // Resime tıklanmasını engelle
+            }
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showToast(`İndirim kodu kopyalandı: ${code}`);
+            }).catch(err => {
+                showToast('Kopyalama başarısız!');
+                console.error('Kopyalama hatası:', err);
+            });
+        }
+
         // Filtrele ve göster
         function filterAndDisplayProducts() {
             let filteredProducts = [...originalProducts];
             
-            // Kategori filtresi
             if (currentCategory !== 'all') {
                 filteredProducts = filteredProducts.filter(product => 
                     product.category === currentCategory
                 );
             }
             
-            // Diğer filtreler
             switch(currentFilter) {
                 case 'high-discount':
                     filteredProducts = filteredProducts.filter(product => {
@@ -1160,22 +1225,6 @@
             loadMoreProducts();
         }
 
-        // İndirim kodunu kopyala
-        function copyCode(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                const originalText = event.target.innerHTML;
-                event.target.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
-                event.target.style.color = 'var(--success)';
-                
-                setTimeout(() => {
-                    event.target.innerHTML = originalText;
-                    event.target.style.color = '';
-                }, 2000);
-            }).catch(err => {
-                alert('Kopyalama başarısız: ' + err);
-            });
-        }
-
         // Durum mesajı fonksiyonları
         function showLoading(message) {
             statusInfo.className = 'status-info warning';
@@ -1218,8 +1267,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadExcelFile();
             
-            // Her 30 saniyede bir Excel dosyasını kontrol et
-            setInterval(checkForExcelUpdates, 10000); // 10 saniyede bir kontrol
+            setInterval(checkForExcelUpdates, 10000);
         });
 
         // Manuel yenileme için global fonksiyon
