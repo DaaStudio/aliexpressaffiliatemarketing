@@ -129,18 +129,22 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             margin-bottom: 30px;
+            display: none; /* Varsayılan olarak gizli */
         }
 
         .status-info.success {
             border-left: 4px solid var(--success);
+            display: block;
         }
 
         .status-info.warning {
             border-left: 4px solid var(--warning);
+            display: block;
         }
 
         .status-info.error {
             border-left: 4px solid var(--primary);
+            display: block;
         }
 
         .refresh-btn {
@@ -375,23 +379,7 @@
         .load-more {
             text-align: center;
             margin: 30px 0;
-        }
-
-        .load-more-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(74, 111, 255, 0.4);
-        }
-
-        .load-more-btn:hover {
-            background: #3a5fdf;
-            transform: translateY(-3px);
+            display: none; /* Varsayılan olarak gizli */
         }
 
         /* Footer */
@@ -500,7 +488,7 @@
         </div>
     </section>
 
-    <!-- Status Info -->
+    <!-- Status Info - Sadece hata durumunda gösterilecek -->
     <section class="container">
         <div class="status-info" id="status-info">
             <h3><i class="fas fa-sync-alt fa-spin"></i> Ürünler Yükleniyor...</h3>
@@ -532,9 +520,10 @@
             <!-- Products will be dynamically inserted here -->
         </section>
 
-        <!-- Load More Button -->
-        <div class="load-more">
-            <button class="load-more-btn" id="load-more-btn">Daha Fazla Ürün Yükle</button>
+        <!-- Loading Indicator -->
+        <div class="loading" id="loading-indicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Daha fazla ürün yükleniyor...</p>
         </div>
     </main>
 
@@ -589,31 +578,33 @@
         // Global variables
         let allProducts = [];
         let displayedProducts = 0;
-        const productsPerPage = 20;
+        const productsPerPage = 12;
         let currentFilter = 'all';
         let currentSort = 'default';
+        let isLoading = false;
+        let hasMoreProducts = true;
 
         // DOM Elements
         const productsGrid = document.getElementById('products');
-        const loadMoreBtn = document.getElementById('load-more-btn');
         const searchInput = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
         const sortSelect = document.getElementById('sort-select');
-        const productCount = document.getElementById('product-count');
         const statusInfo = document.getElementById('status-info');
         const mainContent = document.getElementById('main-content');
+        const loadingIndicator = document.getElementById('loading-indicator');
 
         // Excel dosyasının URL'si - GitHub Pages için
         const EXCEL_FILE_URL = './linkler.xls';
 
-        
         // Event Listeners
-        loadMoreBtn.addEventListener('click', loadMoreProducts);
         searchBtn.addEventListener('click', performSearch);
         searchInput.addEventListener('keyup', (e) => {
             if (e.key === 'Enter') performSearch();
         });
         sortSelect.addEventListener('change', handleSortChange);
+
+        // Scroll event for infinite loading
+        window.addEventListener('scroll', handleScroll);
 
         // Filter buttons
         document.querySelectorAll('.filter-btn').forEach(button => {
@@ -625,12 +616,25 @@
             });
         });
 
+        // Scroll handler for infinite loading
+        function handleScroll() {
+            if (isLoading || !hasMoreProducts) return;
+
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            // Sayfanın sonuna 200px kala yükleme başlasın
+            if (scrollTop + windowHeight >= documentHeight - 200) {
+                loadMoreProducts();
+            }
+        }
+
         // Excel dosyasını yükle ve işle
         async function loadExcelFile() {
             try {
                 showLoading('Excel dosyası yükleniyor...');
                 
-                // Excel dosyasını fetch ile al
                 const response = await fetch(EXCEL_FILE_URL);
                 
                 if (!response.ok) {
@@ -640,19 +644,15 @@
                 const arrayBuffer = await response.arrayBuffer();
                 const data = new Uint8Array(arrayBuffer);
                 
-                // Excel'i parse et
                 const workbook = XLSX.read(data, { type: 'array' });
-                
-                // İlk sayfayı al
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
-                
-                // JSON'a çevir
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
                 
                 if (jsonData.length > 0) {
                     processExcelData(jsonData);
-                    showSuccess(`${jsonData.length} ürün başarıyla yüklendi!`);
+                    // Başarı mesajını gösterme - sadece hata durumunda göster
+                    statusInfo.style.display = 'none';
                 } else {
                     throw new Error('Excel dosyasında veri bulunamadı');
                 }
@@ -666,7 +666,6 @@
         // Excel verilerini işle
         function processExcelData(data) {
             allProducts = data.map(item => {
-                // Excel sütunlarını product özelliklerine map et
                 return {
                     id: item.ProductId || item.productId || '',
                     title: item['Product Desc'] || item.productDesc || item.title || '',
@@ -679,16 +678,12 @@
                     rating: item['Positive Feedback'] || item.positiveFeedback || item.rating || '',
                     sales: item.Sales180Day || item.sales180Day || item.sales || 0
                 };
-            }).filter(product => product.id && product.title); // ID ve title olmayan ürünleri filtrele
+            }).filter(product => product.id && product.title);
 
-            // Ürün sayısını güncelle
-            if (productCount) {
-                productCount.textContent = allProducts.length;
-            }
-            
             // Display'i resetle
             displayedProducts = 0;
             productsGrid.innerHTML = '';
+            hasMoreProducts = true;
             
             // İlk ürünleri yükle
             loadMoreProducts();
@@ -699,20 +694,33 @@
 
         // Daha fazla ürün yükle
         function loadMoreProducts() {
-            const productsToShow = allProducts.slice(displayedProducts, displayedProducts + productsPerPage);
+            if (isLoading || !hasMoreProducts) return;
             
-            if (productsToShow.length === 0) {
-                loadMoreBtn.style.display = 'none';
-                return;
-            }
+            isLoading = true;
+            loadingIndicator.style.display = 'block';
             
-            renderProducts(productsToShow);
-            displayedProducts += productsToShow.length;
-            
-            // Tüm ürünler gösterildiyse butonu gizle
-            if (displayedProducts >= allProducts.length) {
-                loadMoreBtn.style.display = 'none';
-            }
+            // Simüle edilmiş yükleme gecikmesi (gerçek uygulamada kaldırılabilir)
+            setTimeout(() => {
+                const productsToShow = allProducts.slice(displayedProducts, displayedProducts + productsPerPage);
+                
+                if (productsToShow.length === 0) {
+                    hasMoreProducts = false;
+                    loadingIndicator.style.display = 'none';
+                    isLoading = false;
+                    return;
+                }
+                
+                renderProducts(productsToShow);
+                displayedProducts += productsToShow.length;
+                
+                // Tüm ürünler gösterildiyse loading indicator'ü gizle
+                if (displayedProducts >= allProducts.length) {
+                    hasMoreProducts = false;
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                isLoading = false;
+            }, 500);
         }
 
         // Ürünleri grid'e render et
@@ -721,7 +729,6 @@
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 
-                // Eksik resimleri handle et
                 const imageUrl = product.image || 'https://via.placeholder.com/300x200?text=Resim+Yok';
                 
                 productCard.innerHTML = `
@@ -758,7 +765,6 @@
         function filterAndDisplayProducts() {
             let filteredProducts = [...allProducts];
             
-            // Filtreleri uygula
             switch(currentFilter) {
                 case 'high-discount':
                     filteredProducts = filteredProducts.filter(product => {
@@ -778,26 +784,15 @@
                         return rating >= 95;
                     });
                     break;
-                // 'all' filtresi tüm ürünleri gösterir
             }
             
-            // Sıralamayı uygula
             applySorting(filteredProducts);
             
-            // Display'i resetle
             displayedProducts = 0;
             productsGrid.innerHTML = '';
-            loadMoreBtn.style.display = 'block';
+            hasMoreProducts = true;
             
-            // Pagination için allProducts'u güncelle
             allProducts = filteredProducts;
-            
-            // Ürün sayısını güncelle
-            if (productCount) {
-                productCount.textContent = allProducts.length;
-            }
-            
-            // İlk ürünleri yükle
             loadMoreProducts();
         }
 
@@ -838,12 +833,11 @@
                         return ratingB - ratingA;
                     });
                     break;
-                // 'default' orijinal sırayı korur
             }
             return products;
         }
 
-        // String'den fiyatı çıkar (örn: "EUR 21.47" -> 21.47)
+        // String'den fiyatı çıkar
         function extractPrice(priceStr) {
             if (!priceStr) return 0;
             const match = priceStr.toString().match(/[\d,.]+/);
@@ -855,7 +849,6 @@
             const searchTerm = searchInput.value.toLowerCase().trim();
             
             if (searchTerm === '') {
-                // Arama boşsa, tüm ürünlere resetle
                 filterAndDisplayProducts();
                 return;
             }
@@ -864,22 +857,17 @@
                 product.title.toLowerCase().includes(searchTerm)
             );
             
-            // Display'i resetle
             displayedProducts = 0;
             productsGrid.innerHTML = '';
-            loadMoreBtn.style.display = filteredProducts.length > productsPerPage ? 'block' : 'none';
+            hasMoreProducts = true;
             
-            // Arama sonuçlarını göster
-            renderProducts(filteredProducts);
-            
-            // Durumu güncelle
-            showWarning(`"${searchTerm}" için ${filteredProducts.length} ürün bulundu`);
+            allProducts = filteredProducts;
+            loadMoreProducts();
         }
 
         // İndirim kodunu kopyala
         function copyCode(code) {
             navigator.clipboard.writeText(code).then(() => {
-                // Başarı mesajını göster
                 const originalText = event.target.innerHTML;
                 event.target.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
                 event.target.style.color = 'var(--success)';
@@ -900,30 +888,7 @@
                 <h3><i class="fas fa-sync-alt fa-spin"></i> ${message}</h3>
                 <p>Lütfen bekleyin...</p>
             `;
-        }
-
-        function showSuccess(message) {
-            statusInfo.className = 'status-info success';
-            statusInfo.innerHTML = `
-                <h3><i class="fas fa-check-circle"></i> ${message}</h3>
-                <p>Toplam <strong>${allProducts.length}</strong> ürün yüklendi. 
-                   <button class="refresh-btn" onclick="refreshProducts()">
-                       <i class="fas fa-sync-alt"></i> Yenile
-                   </button>
-                </p>
-            `;
-        }
-
-        function showWarning(message) {
-            statusInfo.className = 'status-info warning';
-            statusInfo.innerHTML = `
-                <h3><i class="fas fa-exclamation-triangle"></i> ${message}</h3>
-                <p>
-                   <button class="refresh-btn" onclick="refreshProducts()">
-                       <i class="fas fa-sync-alt"></i> Tüm Ürünleri Göster
-                   </button>
-                </p>
-            `;
+            statusInfo.style.display = 'block';
         }
 
         function showError(message) {
@@ -937,6 +902,7 @@
                    </button>
                 </p>
             `;
+            statusInfo.style.display = 'block';
         }
 
         // Ürünleri yenile
@@ -947,12 +913,6 @@
         // Sayfa yüklendiğinde Excel dosyasını otomatik yükle
         window.addEventListener('DOMContentLoaded', () => {
             loadExcelFile();
-            
-            // Her 5 dakikada bir otomatik yenile (opsiyonel)
-            setInterval(() => {
-                console.log('Otomatik yenileme: Excel dosyası kontrol ediliyor...');
-                loadExcelFile();
-            }, 5 * 60 * 1000); // 5 dakika
         });
     </script>
 </body>
