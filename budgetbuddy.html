@@ -363,7 +363,7 @@
         }
 
         .product-image-container {
-            height: 220px; /* Büyütülmüş yükseklik */
+            height: 220px;
             overflow: hidden;
             position: relative;
             cursor: pointer;
@@ -376,7 +376,7 @@
         .product-image {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Resmi tam göster */
+            object-fit: contain;
             transition: var(--transition);
             padding: 10px;
         }
@@ -1032,8 +1032,8 @@
                 filterHighRating: "Haute Note",
                 filterFavorites: "Mes Favoris",
                 sortDefault: "Tri par Défaut",
-                sortPriceLow: "Precio (Croissant)",
-                sortPriceHigh: "Precio (Décroissant)",
+                sortPriceLow: "Prix (Croissant)",
+                sortPriceHigh: "Prix (Décroissant)",
                 sortDiscount: "Taux de Réduction",
                 sortRating: "Note",
                 noFavoritesTitle: "Vous n'avez pas encore de favoris",
@@ -1065,287 +1065,244 @@
             }
         };
 
-        // Ürün çevirileri
+        // Ürün çevirileri - Çok daha kapsamlı
         const productTranslations = {
             en: {
                 // Elektronik
-                "smartphone": "Smartphone",
-                "phone": "Phone",
-                "laptop": "Laptop",
-                "tablet": "Tablet",
-                "headphones": "Headphones",
-                "earphones": "Earphones",
-                "charger": "Charger",
-                "cable": "Cable",
-                "power bank": "Power Bank",
-                "mouse": "Mouse",
-                "keyboard": "Keyboard",
-                "monitor": "Monitor",
-                "camera": "Camera",
-                "watch": "Watch",
-                "smart watch": "Smart Watch",
+                "smartphone": "Smartphone", "phone": "Phone", "mobile": "Mobile", "iphone": "iPhone", "samsung": "Samsung", 
+                "huawei": "Huawei", "xiaomi": "Xiaomi", "oppo": "Oppo", "vivo": "Vivo", "oneplus": "OnePlus",
+                "laptop": "Laptop", "notebook": "Notebook", "computer": "Computer", "macbook": "MacBook", 
+                "tablet": "Tablet", "ipad": "iPad", "headphones": "Headphones", "earphones": "Earphones", 
+                "earbuds": "Earbuds", "airpods": "AirPods", "charger": "Charger", "cable": "Cable", 
+                "power bank": "Power Bank", "powerbank": "Powerbank", "mouse": "Mouse", "keyboard": "Keyboard", 
+                "monitor": "Monitor", "camera": "Camera", "watch": "Watch", "smart watch": "Smart Watch",
+                "smartwatch": "Smartwatch", "fitness tracker": "Fitness Tracker", "drone": "Drone",
+                "gaming": "Gaming", "console": "Console", "playstation": "PlayStation", "xbox": "Xbox",
+                "nintendo": "Nintendo", "vr": "VR", "virtual reality": "Virtual Reality",
                 
                 // Moda
-                "t-shirt": "T-Shirt",
-                "shirt": "Shirt",
-                "pants": "Pants",
-                "jeans": "Jeans",
-                "dress": "Dress",
-                "skirt": "Skirt",
-                "jacket": "Jacket",
-                "coat": "Coat",
-                "sweater": "Sweater",
-                "shoes": "Shoes",
-                "sneakers": "Sneakers",
-                "bag": "Bag",
-                "backpack": "Backpack",
-                "wallet": "Wallet",
-                "jewelry": "Jewelry",
-                "necklace": "Necklace",
-                "bracelet": "Bracelet",
-                "ring": "Ring",
+                "t-shirt": "T-Shirt", "tshirt": "Tshirt", "shirt": "Shirt", "pants": "Pants", "jeans": "Jeans", 
+                "dress": "Dress", "skirt": "Skirt", "jacket": "Jacket", "coat": "Coat", "sweater": "Sweater",
+                "hoodie": "Hoodie", "sweatshirt": "Sweatshirt", "underwear": "Underwear", "lingerie": "Lingerie",
+                "swimsuit": "Swimsuit", "bikini": "Bikini", "shoes": "Shoes", "sneakers": "Sneakers",
+                "boots": "Boots", "sandals": "Sandals", "heels": "Heels", "bag": "Bag", "backpack": "Backpack",
+                "purse": "Purse", "wallet": "Wallet", "jewelry": "Jewelry", "necklace": "Necklace",
+                "bracelet": "Bracelet", "ring": "Ring", "earrings": "Earrings", "watch": "Watch",
+                "sunglasses": "Sunglasses", "glasses": "Glasses", "hat": "Hat", "cap": "Cap",
                 
                 // Ev & Yaşam
-                "home": "Home",
-                "furniture": "Furniture",
-                "sofa": "Sofa",
-                "chair": "Chair",
-                "table": "Table",
-                "bed": "Bed",
-                "lamp": "Lamp",
-                "curtain": "Curtain",
-                "carpet": "Carpet",
-                "pillow": "Pillow",
-                "blanket": "Blanket",
-                "kitchen": "Kitchen",
-                "cookware": "Cookware",
-                "utensil": "Utensil",
+                "home": "Home", "furniture": "Furniture", "sofa": "Sofa", "couch": "Couch", "chair": "Chair", 
+                "table": "Table", "desk": "Desk", "bed": "Bed", "mattress": "Mattress", "wardrobe": "Wardrobe",
+                "cabinet": "Cabinet", "shelf": "Shelf", "lamp": "Lamp", "lighting": "Lighting", 
+                "curtain": "Curtain", "carpet": "Carpet", "rug": "Rug", "pillow": "Pillow", "blanket": "Blanket",
+                "bedding": "Bedding", "kitchen": "Kitchen", "cookware": "Cookware", "utensil": "Utensil",
+                "knife": "Knife", "pot": "Pot", "pan": "Pan", "appliance": "Appliance", "refrigerator": "Refrigerator",
+                "washing machine": "Washing Machine", "vacuum": "Vacuum", "cleaner": "Cleaner",
+                
+                // Kozmetik
+                "cosmetic": "Cosmetic", "makeup": "Makeup", "foundation": "Foundation", "concealer": "Concealer",
+                "powder": "Powder", "blush": "Blush", "bronzer": "Bronzer", "highlighter": "Highlighter",
+                "eyeshadow": "Eyeshadow", "eyeliner": "Eyeliner", "mascara": "Mascara", "lipstick": "Lipstick",
+                "lip gloss": "Lip Gloss", "skincare": "Skincare", "cream": "Cream", "lotion": "Lotion",
+                "serum": "Serum", "moisturizer": "Moisturizer", "sunscreen": "Sunscreen", "perfume": "Perfume",
+                "fragrance": "Fragrance", "deodorant": "Deodorant", "shampoo": "Shampoo", "conditioner": "Conditioner",
                 
                 // Genel terimler
-                "wireless": "Wireless",
-                "bluetooth": "Bluetooth",
-                "gaming": "Gaming",
-                "sports": "Sports",
-                "fitness": "Fitness",
-                "outdoor": "Outdoor",
-                "waterproof": "Waterproof",
-                "premium": "Premium",
-                "professional": "Professional",
-                "luxury": "Luxury",
-                "new": "New",
-                "2024": "2024",
-                "latest": "Latest",
-                "high quality": "High Quality"
+                "wireless": "Wireless", "bluetooth": "Bluetooth", "sports": "Sports", "fitness": "Fitness",
+                "outdoor": "Outdoor", "waterproof": "Waterproof", "premium": "Premium", "professional": "Professional",
+                "luxury": "Luxury", "new": "New", "2024": "2024", "latest": "Latest", "high quality": "High Quality",
+                "best": "Best", "top": "Top", "popular": "Popular", "trending": "Trending", "hot": "Hot",
+                "sale": "Sale", "discount": "Discount", "cheap": "Cheap", "affordable": "Affordable",
+                "durable": "Durable", "comfortable": "Comfortable", "stylish": "Stylish", "fashion": "Fashion",
+                "design": "Design", "color": "Color", "size": "Size", "large": "Large", "small": "Small",
+                "medium": "Medium", "black": "Black", "white": "White", "red": "Red", "blue": "Blue",
+                "green": "Green", "yellow": "Yellow", "pink": "Pink", "purple": "Purple", "orange": "Orange",
+                "for": "for", "with": "with", "and": "and", "the": "the", "set": "Set", "kit": "Kit",
+                "pack": "Pack", "piece": "Piece", "pair": "Pair"
             },
             tr: {
                 // Elektronik
-                "smartphone": "Akıllı Telefon",
-                "phone": "Telefon",
-                "laptop": "Dizüstü Bilgisayar",
-                "tablet": "Tablet",
-                "headphones": "Kulaklık",
-                "earphones": "Kulak İçi Kulaklık",
-                "charger": "Şarj Cihazı",
-                "cable": "Kablo",
-                "power bank": "Power Bank",
-                "mouse": "Fare",
-                "keyboard": "Klavye",
-                "monitor": "Monitör",
-                "camera": "Kamera",
-                "watch": "Saat",
-                "smart watch": "Akıllı Saat",
+                "smartphone": "Akıllı Telefon", "phone": "Telefon", "mobile": "Mobil", "iphone": "iPhone", 
+                "samsung": "Samsung", "huawei": "Huawei", "xiaomi": "Xiaomi", "oppo": "Oppo", "vivo": "Vivo", 
+                "oneplus": "OnePlus", "laptop": "Dizüstü Bilgisayar", "notebook": "Notebook", 
+                "computer": "Bilgisayar", "macbook": "MacBook", "tablet": "Tablet", "ipad": "iPad", 
+                "headphones": "Kulaklık", "earphones": "Kulak İçi Kulaklık", "earbuds": "Kulaklık", 
+                "airpods": "AirPods", "charger": "Şarj Cihazı", "cable": "Kablo", "power bank": "Power Bank", 
+                "powerbank": "Powerbank", "mouse": "Fare", "keyboard": "Klavye", "monitor": "Monitör", 
+                "camera": "Kamera", "watch": "Saat", "smart watch": "Akıllı Saat", "smartwatch": "Akıllı Saat",
+                "fitness tracker": "Fitness Takipçi", "drone": "Drone", "gaming": "Oyun", "console": "Konsol",
+                "playstation": "PlayStation", "xbox": "Xbox", "nintendo": "Nintendo", "vr": "VR",
+                "virtual reality": "Sanal Gerçeklik",
                 
                 // Moda
-                "t-shirt": "Tişört",
-                "shirt": "Gömlek",
-                "pants": "Pantolon",
-                "jeans": "Kot Pantolon",
-                "dress": "Elbise",
-                "skirt": "Etek",
-                "jacket": "Ceket",
-                "coat": "Mont",
-                "sweater": "Kazak",
-                "shoes": "Ayakkabı",
-                "sneakers": "Spor Ayakkabı",
-                "bag": "Çanta",
-                "backpack": "Sırt Çantası",
-                "wallet": "Cüzdan",
-                "jewelry": "Takı",
-                "necklace": "Kolye",
-                "bracelet": "Bileklik",
-                "ring": "Yüzük",
+                "t-shirt": "Tişört", "tshirt": "Tişört", "shirt": "Gömlek", "pants": "Pantolon", 
+                "jeans": "Kot Pantolon", "dress": "Elbise", "skirt": "Etek", "jacket": "Ceket", 
+                "coat": "Mont", "sweater": "Kazak", "hoodie": "Sweatshirt", "sweatshirt": "Sweatshirt",
+                "underwear": "İç Çamaşırı", "lingerie": "İç Giyim", "swimsuit": "Mayo", "bikini": "Bikini",
+                "shoes": "Ayakkabı", "sneakers": "Spor Ayakkabı", "boots": "Bot", "sandals": "Sandalet",
+                "heels": "Topuklu Ayakkabı", "bag": "Çanta", "backpack": "Sırt Çantası", "purse": "Cüzdan",
+                "wallet": "Cüzdan", "jewelry": "Takı", "necklace": "Kolye", "bracelet": "Bileklik",
+                "ring": "Yüzük", "earrings": "Küpe", "watch": "Saat", "sunglasses": "Güneş Gözlüğü",
+                "glasses": "Gözlük", "hat": "Şapka", "cap": "Şapka",
                 
                 // Ev & Yaşam
-                "home": "Ev",
-                "furniture": "Mobilya",
-                "sofa": "Kanepe",
-                "chair": "Sandalye",
-                "table": "Masa",
-                "bed": "Yatak",
-                "lamp": "Lamba",
-                "curtain": "Perde",
-                "carpet": "Halı",
-                "pillow": "Yastık",
-                "blanket": "Battaniye",
-                "kitchen": "Mutfak",
-                "cookware": "Pişirme Eşyaları",
-                "utensil": "Mutfak Gereci",
+                "home": "Ev", "furniture": "Mobilya", "sofa": "Kanepe", "couch": "Kanepe", "chair": "Sandalye", 
+                "table": "Masa", "desk": "Masa", "bed": "Yatak", "mattress": "Yatak", "wardrobe": "Dolap",
+                "cabinet": "Dolap", "shelf": "Raf", "lamp": "Lamba", "lighting": "Aydınlatma", 
+                "curtain": "Perde", "carpet": "Halı", "rug": "Halı", "pillow": "Yastık", "blanket": "Battaniye",
+                "bedding": "Yatak Takımı", "kitchen": "Mutfak", "cookware": "Pişirme Eşyaları", 
+                "utensil": "Mutfak Gereci", "knife": "Bıçak", "pot": "Tencere", "pan": "Tava", 
+                "appliance": "Ev Aleti", "refrigerator": "Buzdolabı", "washing machine": "Çamaşır Makinesi",
+                "vacuum": "Elektrikli Süpürge", "cleaner": "Temizleyici",
+                
+                // Kozmetik
+                "cosmetic": "Kozmetik", "makeup": "Makyaj", "foundation": "Fondöten", "concealer": "Kapatıcı",
+                "powder": "Pudra", "blush": "Allık", "bronzer": "Bronzlaştırıcı", "highlighter": "Highlighter",
+                "eyeshadow": "Göz Farı", "eyeliner": "Eyeliner", "mascara": "Maskara", "lipstick": "Ruj",
+                "lip gloss": "Lip Gloss", "skincare": "Cilt Bakımı", "cream": "Krem", "lotion": "Losyon",
+                "serum": "Serum", "moisturizer": "Nemlendirici", "sunscreen": "Güneş Kremi", "perfume": "Parfüm",
+                "fragrance": "Parfüm", "deodorant": "Deodorant", "shampoo": "Şampuan", "conditioner": "Saç Kremi",
                 
                 // Genel terimler
-                "wireless": "Kablosuz",
-                "bluetooth": "Bluetooth",
-                "gaming": "Oyun",
-                "sports": "Spor",
-                "fitness": "Fitness",
-                "outdoor": "Açık Hava",
-                "waterproof": "Su Geçirmez",
-                "premium": "Premium",
-                "professional": "Profesyonel",
-                "luxury": "Lüks",
-                "new": "Yeni",
-                "2024": "2024",
-                "latest": "En Yeni",
-                "high quality": "Yüksek Kalite"
+                "wireless": "Kablosuz", "bluetooth": "Bluetooth", "sports": "Spor", "fitness": "Fitness",
+                "outdoor": "Açık Hava", "waterproof": "Su Geçirmez", "premium": "Premium", 
+                "professional": "Profesyonel", "luxury": "Lüks", "new": "Yeni", "2024": "2024", 
+                "latest": "En Yeni", "high quality": "Yüksek Kalite", "best": "En İyi", "top": "En İyi",
+                "popular": "Popüler", "trending": "Trend", "hot": "Popüler", "sale": "İndirim", 
+                "discount": "İndirim", "cheap": "Ucuz", "affordable": "Uygun Fiyatlı", "durable": "Dayanıklı",
+                "comfortable": "Rahat", "stylish": "Şık", "fashion": "Moda", "design": "Tasarım", 
+                "color": "Renk", "size": "Beden", "large": "Büyük", "small": "Küçük", "medium": "Orta",
+                "black": "Siyah", "white": "Beyaz", "red": "Kırmızı", "blue": "Mavi", "green": "Yeşil",
+                "yellow": "Sarı", "pink": "Pembe", "purple": "Mor", "orange": "Turuncu", "for": "için",
+                "with": "ile", "and": "ve", "the": "", "set": "Set", "kit": "Set", "pack": "Paket",
+                "piece": "Parça", "pair": "Çift"
             },
             es: {
                 // Elektronik
-                "smartphone": "Teléfono Inteligente",
-                "phone": "Teléfono",
-                "laptop": "Portátil",
-                "tablet": "Tableta",
-                "headphones": "Auriculares",
-                "earphones": "Auriculares Intrauditivos",
-                "charger": "Cargador",
-                "cable": "Cable",
-                "power bank": "Banco de Energía",
-                "mouse": "Ratón",
-                "keyboard": "Teclado",
-                "monitor": "Monitor",
-                "camera": "Cámara",
-                "watch": "Reloj",
-                "smart watch": "Reloj Inteligente",
+                "smartphone": "Teléfono Inteligente", "phone": "Teléfono", "mobile": "Móvil", 
+                "iphone": "iPhone", "samsung": "Samsung", "huawei": "Huawei", "xiaomi": "Xiaomi", 
+                "oppo": "Oppo", "vivo": "Vivo", "oneplus": "OnePlus", "laptop": "Portátil", 
+                "notebook": "Portátil", "computer": "Computadora", "macbook": "MacBook", 
+                "tablet": "Tableta", "ipad": "iPad", "headphones": "Auriculares", 
+                "earphones": "Auriculares Intrauditivos", "earbuds": "Auriculares", 
+                "airpods": "AirPods", "charger": "Cargador", "cable": "Cable", 
+                "power bank": "Banco de Energía", "powerbank": "Powerbank", "mouse": "Ratón", 
+                "keyboard": "Teclado", "monitor": "Monitor", "camera": "Cámara", "watch": "Reloj", 
+                "smart watch": "Reloj Inteligente", "smartwatch": "Reloj Inteligente",
+                "fitness tracker": "Rastreador de Fitness", "drone": "Dron", "gaming": "Juegos",
+                "console": "Consola", "playstation": "PlayStation", "xbox": "Xbox", 
+                "nintendo": "Nintendo", "vr": "VR", "virtual reality": "Realidad Virtual",
                 
                 // Moda
-                "t-shirt": "Camiseta",
-                "shirt": "Camisa",
-                "pants": "Pantalones",
-                "jeans": "Jeans",
-                "dress": "Vestido",
-                "skirt": "Falda",
-                "jacket": "Chaqueta",
-                "coat": "Abrigo",
-                "sweater": "Suéter",
-                "shoes": "Zapatos",
-                "sneakers": "Zapatillas",
-                "bag": "Bolso",
-                "backpack": "Mochila",
-                "wallet": "Cartera",
-                "jewelry": "Joyería",
-                "necklace": "Collar",
-                "bracelet": "Pulsera",
-                "ring": "Anillo",
+                "t-shirt": "Camiseta", "tshirt": "Camiseta", "shirt": "Camisa", "pants": "Pantalones", 
+                "jeans": "Jeans", "dress": "Vestido", "skirt": "Falda", "jacket": "Chaqueta", 
+                "coat": "Abrigo", "sweater": "Suéter", "hoodie": "Sudadera", "sweatshirt": "Sudadera",
+                "underwear": "Ropa Interior", "lingerie": "Lencería", "swimsuit": "Traje de Baño", 
+                "bikini": "Bikini", "shoes": "Zapatos", "sneakers": "Zapatillas", "boots": "Botas",
+                "sandals": "Sandalias", "heels": "Tacones", "bag": "Bolso", "backpack": "Mochila",
+                "purse": "Bolso", "wallet": "Cartera", "jewelry": "Joyería", "necklace": "Collar",
+                "bracelet": "Pulsera", "ring": "Anillo", "earrings": "Aretes", "watch": "Reloj",
+                "sunglasses": "Gafas de Sol", "glasses": "Gafas", "hat": "Sombrero", "cap": "Gorra",
                 
                 // Ev & Yaşam
-                "home": "Hogar",
-                "furniture": "Muebles",
-                "sofa": "Sofá",
-                "chair": "Silla",
-                "table": "Mesa",
-                "bed": "Cama",
-                "lamp": "Lámpara",
-                "curtain": "Cortina",
-                "carpet": "Alfombra",
-                "pillow": "Almohada",
-                "blanket": "Manta",
-                "kitchen": "Cocina",
-                "cookware": "Utensilios de Cocina",
-                "utensil": "Utensilio",
+                "home": "Hogar", "furniture": "Muebles", "sofa": "Sofá", "couch": "Sofá", 
+                "chair": "Silla", "table": "Mesa", "desk": "Escritorio", "bed": "Cama", 
+                "mattress": "Colchón", "wardrobe": "Armario", "cabinet": "Gabinete", "shelf": "Estante", 
+                "lamp": "Lámpara", "lighting": "Iluminación", "curtain": "Cortina", "carpet": "Alfombra", 
+                "rug": "Alfombra", "pillow": "Almohada", "blanket": "Manta", "bedding": "Ropa de Cama",
+                "kitchen": "Cocina", "cookware": "Utensilios de Cocina", "utensil": "Utensilio",
+                "knife": "Cuchillo", "pot": "Olla", "pan": "Sartén", "appliance": "Electrodoméstico",
+                "refrigerator": "Refrigerador", "washing machine": "Lavadora", "vacuum": "Aspiradora",
+                "cleaner": "Limpiador",
+                
+                // Kozmetik
+                "cosmetic": "Cosmético", "makeup": "Maquillaje", "foundation": "Base de Maquillaje",
+                "concealer": "Corrector", "powder": "Polvo", "blush": "Rubor", "bronzer": "Bronceador",
+                "highlighter": "Iluminador", "eyeshadow": "Sombra de Ojos", "eyeliner": "Delineador",
+                "mascara": "Máscara", "lipstick": "Lápiz Labial", "lip gloss": "Brillo Labial",
+                "skincare": "Cuidado de la Piel", "cream": "Crema", "lotion": "Loción", "serum": "Suero",
+                "moisturizer": "Hidratante", "sunscreen": "Protector Solar", "perfume": "Perfume",
+                "fragrance": "Fragancia", "deodorant": "Desodorante", "shampoo": "Champú",
+                "conditioner": "Acondicionador",
                 
                 // Genel terimler
-                "wireless": "Inalámbrico",
-                "bluetooth": "Bluetooth",
-                "gaming": "Juegos",
-                "sports": "Deportes",
-                "fitness": "Fitness",
-                "outdoor": "Exterior",
-                "waterproof": "Impermeable",
-                "premium": "Premium",
-                "professional": "Profesional",
-                "luxury": "Lujo",
-                "new": "Nuevo",
-                "2024": "2024",
-                "latest": "Más Reciente",
-                "high quality": "Alta Calidad"
+                "wireless": "Inalámbrico", "bluetooth": "Bluetooth", "sports": "Deportes", 
+                "fitness": "Fitness", "outdoor": "Exterior", "waterproof": "Impermeable", 
+                "premium": "Premium", "professional": "Profesional", "luxury": "Lujo", "new": "Nuevo",
+                "2024": "2024", "latest": "Más Reciente", "high quality": "Alta Calidad", 
+                "best": "Mejor", "top": "Mejor", "popular": "Popular", "trending": "Tendencia",
+                "hot": "Popular", "sale": "Venta", "discount": "Descuento", "cheap": "Barato",
+                "affordable": "Asequible", "durable": "Durable", "comfortable": "Cómodo",
+                "stylish": "Elegante", "fashion": "Moda", "design": "Diseño", "color": "Color",
+                "size": "Tamaño", "large": "Grande", "small": "Pequeño", "medium": "Mediano",
+                "black": "Negro", "white": "Blanco", "red": "Rojo", "blue": "Azul", "green": "Verde",
+                "yellow": "Amarillo", "pink": "Rosa", "purple": "Púrpura", "orange": "Naranja",
+                "for": "para", "with": "con", "and": "y", "the": "el", "set": "Set", "kit": "Kit",
+                "pack": "Paquete", "piece": "Pieza", "pair": "Par"
             },
             fr: {
                 // Elektronik
-                "smartphone": "Smartphone",
-                "phone": "Téléphone",
-                "laptop": "Ordinateur Portable",
-                "tablet": "Tablette",
-                "headphones": "Casque Audio",
-                "earphones": "Écouteurs",
-                "charger": "Chargeur",
-                "cable": "Câble",
-                "power bank": "Batterie Externe",
-                "mouse": "Souris",
-                "keyboard": "Clavier",
-                "monitor": "Moniteur",
-                "camera": "Caméra",
-                "watch": "Montre",
-                "smart watch": "Montre Connectée",
+                "smartphone": "Smartphone", "phone": "Téléphone", "mobile": "Mobile", 
+                "iphone": "iPhone", "samsung": "Samsung", "huawei": "Huawei", "xiaomi": "Xiaomi", 
+                "oppo": "Oppo", "vivo": "Vivo", "oneplus": "OnePlus", "laptop": "Ordinateur Portable", 
+                "notebook": "Ordinateur Portable", "computer": "Ordinateur", "macbook": "MacBook", 
+                "tablet": "Tablette", "ipad": "iPad", "headphones": "Casque Audio", 
+                "earphones": "Écouteurs", "earbuds": "Écouteurs", "airpods": "AirPods", 
+                "charger": "Chargeur", "cable": "Câble", "power bank": "Batterie Externe", 
+                "powerbank": "Powerbank", "mouse": "Souris", "keyboard": "Clavier", 
+                "monitor": "Moniteur", "camera": "Caméra", "watch": "Montre", 
+                "smart watch": "Montre Connectée", "smartwatch": "Montre Connectée",
+                "fitness tracker": "Traqueur de Fitness", "drone": "Drone", "gaming": "Jeu",
+                "console": "Console", "playstation": "PlayStation", "xbox": "Xbox", 
+                "nintendo": "Nintendo", "vr": "VR", "virtual reality": "Réalité Virtuelle",
                 
                 // Moda
-                "t-shirt": "T-Shirt",
-                "shirt": "Chemise",
-                "pants": "Pantalon",
-                "jeans": "Jeans",
-                "dress": "Robe",
-                "skirt": "Jupe",
-                "jacket": "Veste",
-                "coat": "Manteau",
-                "sweater": "Pull",
-                "shoes": "Chaussures",
-                "sneakers": "Baskets",
-                "bag": "Sac",
-                "backpack": "Sac à Dos",
-                "wallet": "Portefeuille",
-                "jewelry": "Bijoux",
-                "necklace": "Collier",
-                "bracelet": "Bracelet",
-                "ring": "Bague",
+                "t-shirt": "T-Shirt", "tshirt": "T-shirt", "shirt": "Chemise", "pants": "Pantalon", 
+                "jeans": "Jeans", "dress": "Robe", "skirt": "Jupe", "jacket": "Veste", 
+                "coat": "Manteau", "sweater": "Pull", "hoodie": "Sweat à capuche", 
+                "sweatshirt": "Sweat-shirt", "underwear": "Sous-vêtements", "lingerie": "Lingerie",
+                "swimsuit": "Maillot de Bain", "bikini": "Bikini", "shoes": "Chaussures", 
+                "sneakers": "Baskets", "boots": "Bottes", "sandals": "Sandales", "heels": "Talons",
+                "bag": "Sac", "backpack": "Sac à Dos", "purse": "Sac à Main", "wallet": "Portefeuille",
+                "jewelry": "Bijoux", "necklace": "Collier", "bracelet": "Bracelet", "ring": "Bague",
+                "earrings": "Boucles d'Oreilles", "watch": "Montre", "sunglasses": "Lunettes de Soleil",
+                "glasses": "Lunettes", "hat": "Chapeau", "cap": "Casquette",
                 
                 // Ev & Yaşam
-                "home": "Maison",
-                "furniture": "Meubles",
-                "sofa": "Canapé",
-                "chair": "Chaise",
-                "table": "Table",
-                "bed": "Lit",
-                "lamp": "Lampe",
-                "curtain": "Rideau",
-                "carpet": "Tapis",
-                "pillow": "Oreiller",
-                "blanket": "Couverture",
-                "kitchen": "Cuisine",
-                "cookware": "Ustensiles de Cuisine",
-                "utensil": "Ustensile",
+                "home": "Maison", "furniture": "Meubles", "sofa": "Canapé", "couch": "Canapé", 
+                "chair": "Chaise", "table": "Table", "desk": "Bureau", "bed": "Lit", 
+                "mattress": "Matelas", "wardrobe": "Garde-robe", "cabinet": "Armoire", 
+                "shelf": "Étagère", "lamp": "Lampe", "lighting": "Éclairage", "curtain": "Rideau", 
+                "carpet": "Tapis", "rug": "Tapis", "pillow": "Oreiller", "blanket": "Couverture",
+                "bedding": "Literie", "kitchen": "Cuisine", "cookware": "Ustensiles de Cuisine",
+                "utensil": "Ustensile", "knife": "Couteau", "pot": "Casserole", "pan": "Poêle",
+                "appliance": "Appareil", "refrigerator": "Réfrigérateur", 
+                "washing machine": "Machine à Laver", "vacuum": "Aspirateur", "cleaner": "Nettoyeur",
+                
+                // Kozmetik
+                "cosmetic": "Cosmétique", "makeup": "Maquillage", "foundation": "Fond de Teint",
+                "concealer": "Correcteur", "powder": "Poudre", "blush": "Fard à Joues", 
+                "bronzer": "Bronzer", "highlighter": "Highlighter", "eyeshadow": "Fard à Paupières",
+                "eyeliner": "Eye-liner", "mascara": "Mascara", "lipstick": "Rouge à Lèvres",
+                "lip gloss": "Brillant à Lèvres", "skincare": "Soins de la Peau", "cream": "Crème",
+                "lotion": "Lotion", "serum": "Sérum", "moisturizer": "Hydratant", 
+                "sunscreen": "Crème Solaire", "perfume": "Parfum", "fragrance": "Parfum",
+                "deodorant": "Déodorant", "shampoo": "Shampooing", "conditioner": "Après-shampooing",
                 
                 // Genel terimler
-                "wireless": "Sans Fil",
-                "bluetooth": "Bluetooth",
-                "gaming": "Jeu",
-                "sports": "Sports",
-                "fitness": "Fitness",
-                "outdoor": "Extérieur",
-                "waterproof": "Étanche",
-                "premium": "Premium",
-                "professional": "Professionnel",
-                "luxury": "Luxe",
-                "new": "Nouveau",
-                "2024": "2024",
-                "latest": "Dernier",
-                "high quality": "Haute Qualité"
+                "wireless": "Sans Fil", "bluetooth": "Bluetooth", "sports": "Sports", 
+                "fitness": "Fitness", "outdoor": "Extérieur", "waterproof": "Étanche", 
+                "premium": "Premium", "professional": "Professionnel", "luxury": "Luxe", 
+                "new": "Nouveau", "2024": "2024", "latest": "Dernier", "high quality": "Haute Qualité",
+                "best": "Meilleur", "top": "Meilleur", "popular": "Populaire", "trending": "Tendance",
+                "hot": "Populaire", "sale": "Solde", "discount": "Réduction", "cheap": "Bon Marché",
+                "affordable": "Abordable", "durable": "Durable", "comfortable": "Confortable",
+                "stylish": "Élégant", "fashion": "Mode", "design": "Design", "color": "Couleur",
+                "size": "Taille", "large": "Grand", "small": "Petit", "medium": "Moyen",
+                "black": "Noir", "white": "Blanc", "red": "Rouge", "blue": "Bleu", "green": "Vert",
+                "yellow": "Jaune", "pink": "Rose", "purple": "Violet", "orange": "Orange",
+                "for": "pour", "with": "avec", "and": "et", "the": "le", "set": "Set", "kit": "Kit",
+                "pack": "Pack", "piece": "Pièce", "pair": "Paire"
             }
         };
 
@@ -1490,18 +1447,35 @@
             updateFavoritesCount();
         }
 
-        // Ürün başlığını çevir
+        // Ürün başlığını çevir - Geliştirilmiş versiyon
         function translateProductTitle(title, targetLang) {
             if (targetLang === 'en') return title; // Zaten İngilizce
             
-            const titleLower = title.toLowerCase();
             let translatedTitle = title;
+            const titleLower = title.toLowerCase();
             
-            // Anahtar kelimeleri çevir
-            for (const [enWord, translation] of Object.entries(productTranslations[targetLang])) {
-                const regex = new RegExp(`\\b${enWord}\\b`, 'gi');
-                if (regex.test(titleLower)) {
-                    translatedTitle = translatedTitle.replace(regex, translation);
+            // Önce uzun ifadeleri çevir, sonra tek kelimeleri
+            const translationMap = productTranslations[targetLang];
+            
+            // Uzun ifadeleri öncelikle çevir (2-3 kelimelik)
+            const phrases = Object.keys(translationMap)
+                .filter(key => key.includes(' ') && titleLower.includes(key))
+                .sort((a, b) => b.length - a.length); // Uzun ifadeleri önce çevir
+            
+            for (const phrase of phrases) {
+                const regex = new RegExp(phrase, 'gi');
+                translatedTitle = translatedTitle.replace(regex, translationMap[phrase]);
+            }
+            
+            // Tek kelimeleri çevir
+            const words = Object.keys(translationMap)
+                .filter(key => !key.includes(' '))
+                .sort((a, b) => b.length - a.length); // Uzun kelimeleri önce çevir
+            
+            for (const word of words) {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                if (regex.test(translatedTitle.toLowerCase())) {
+                    translatedTitle = translatedTitle.replace(regex, translationMap[word]);
                 }
             }
             
@@ -1546,7 +1520,7 @@
                 const testProducts = [
                     {
                         id: '1',
-                        title: 'Smartphone High Discount',
+                        title: 'Smartphone High Discount New 2024',
                         image: 'https://via.placeholder.com/300x200/4A6FFF/FFFFFF?text=Telefon',
                         originalPrice: '₺1,999',
                         discountPrice: '₺999',
@@ -1559,7 +1533,7 @@
                     },
                     {
                         id: '2', 
-                        title: 'Sports Shoes Trend Product',
+                        title: 'Sports Shoes Trend Product with Best Design',
                         image: 'https://via.placeholder.com/300x200/FF4747/FFFFFF?text=Ayakkabı',
                         originalPrice: '₺499',
                         discountPrice: '₺299',
@@ -1572,7 +1546,7 @@
                     },
                     {
                         id: '3',
-                        title: 'Cosmetic Set Special Offer',
+                        title: 'Cosmetic Set Special Offer for Women',
                         image: 'https://via.placeholder.com/300x200/28A745/FFFFFF?text=Kozmetik',
                         originalPrice: '₺299',
                         discountPrice: '₺149',
@@ -1585,7 +1559,7 @@
                     },
                     {
                         id: '4',
-                        title: 'Laptop Super Discount',
+                        title: 'Laptop Super Discount Gaming Computer',
                         image: 'https://via.placeholder.com/300x200/FFC107/000000?text=Laptop',
                         originalPrice: '₺3,999',
                         discountPrice: '₺2,499',
@@ -1598,7 +1572,7 @@
                     },
                     {
                         id: '5',
-                        title: 'Bluetooth Headphone Premium',
+                        title: 'Bluetooth Headphone Premium Wireless',
                         image: 'https://via.placeholder.com/300x200/6C757D/FFFFFF?text=Kulaklık',
                         originalPrice: '₺399',
                         discountPrice: '₺199',
@@ -1611,7 +1585,7 @@
                     },
                     {
                         id: '6',
-                        title: 'Smart Watch Fitness',
+                        title: 'Smart Watch Fitness Tracker with Heart Rate Monitor',
                         image: 'https://via.placeholder.com/300x200/17A2B8/FFFFFF?text=Saat',
                         originalPrice: '₺799',
                         discountPrice: '₺499',
