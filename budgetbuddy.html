@@ -876,7 +876,7 @@
         // Çeviriler
         const translations = {
             tr: {
-                siteTitle: "AliExpress İndirim",
+                siteTitle: "Budget Buddy Discounts",
                 searchPlaceholder: "Ürün ara...",
                 heroTitle: "En İyi AliExpress İndirimleri",
                 heroSubtitle: "Günlük indirim kuponları ile en popüler ürünleri keşfedin ve büyük tasarruf edin!",
@@ -923,7 +923,7 @@
                 buyNow: "Hemen Al"
             },
             en: {
-                siteTitle: "AliExpress Discounts",
+                siteTitle: "Budget Buddy Discounts",
                 searchPlaceholder: "Search products...",
                 heroTitle: "Best AliExpress Discounts",
                 heroSubtitle: "Discover the most popular products with daily discount coupons and save big!",
@@ -970,7 +970,7 @@
                 buyNow: "Buy Now"
             },
             es: {
-                siteTitle: "Descuentos AliExpress",
+                siteTitle: "Budget Buddy Discounts",
                 searchPlaceholder: "Buscar productos...",
                 heroTitle: "Mejores Descuentos de AliExpress",
                 heroSubtitle: "Descubre los productos más populares con cupones de descuento diarios y ahorra mucho!",
@@ -1017,7 +1017,7 @@
                 buyNow: "Comprar Ahora"
             },
             fr: {
-                siteTitle: "Promotions AliExpress",
+                siteTitle: "Budget Buddy Discounts",
                 searchPlaceholder: "Rechercher des produits...",
                 heroTitle: "Meilleures Promotions AliExpress",
                 heroSubtitle: "Découvrez les produits les plus populaires avec des coupons de réduction quotidiens et économisez beaucoup!",
@@ -1091,6 +1091,20 @@
 
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
+
+        // Anahtar kelimeler ve kategoriler
+        const categoryKeywords = {
+            'Elektronik': ['telefon', 'akıllı telefon', 'iphone', 'samsung', 'huawei', 'xiaomi', 'laptop', 'tablet', 'bilgisayar', 'kulaklık', 'bluetooth', 'şarj', 'powerbank', 'kablo', 'adaptör', 'monitör', 'mouse', 'klavye', 'hoparlör', 'televizyon', 'tv', 'kamera', 'fotoğraf makinesi', 'drone', 'oyun konsolu', 'playstation', 'xbox', 'nintendo'],
+            'Moda': ['tişört', 'gömlek', 'pantolon', 'jean', 'elbise', 'etek', 'ceket', 'mont', 'kazak', 'hırka', 'ayakkabı', 'spor ayakkabı', 'topuklu', 'sandalet', 'çanta', 'sırt çantası', 'cüzdan', 'takı', 'kolye', 'küpe', 'bilezik', 'yüzük', 'saat', 'güneş gözlüğü', 'şapka', 'bere', 'atkı', 'eldiven'],
+            'Ev & Yaşam': ['mobilya', 'kanepe', 'koltuk', 'masa', 'sandalye', 'yatak', 'dolap', 'perde', 'halı', 'kilim', 'yastık', 'yatak örtüsü', 'nevresim', 'mutfak', 'tencere', 'tava', 'bıçak', 'bardak', 'tabak', 'elektrikli süpürge', 'ütü', 'saç kurutma', 'ısıtıcı', 'vantilatör', 'klima', 'lamba', 'avize', 'duvar saati'],
+            'Kozmetik': ['makyaj', 'fondöten', 'ruj', 'far', 'maskara', 'allık', 'fondöten', 'krem', 'nemlendirici', 'güneş kremi', 'parfüm', 'deodorant', 'şampuan', 'saç kremi', 'saç boyası', 'ojе', 'makyaj fırçası', 'makyaj seti', 'cilt bakım', 'yüz maskesi', 'losyon', 'dudak kremi'],
+            'Spor & Outdoor': ['spor', 'fitness', 'koşu', 'yürüyüş', 'bisiklet', 'yoga', 'pilates', 'dambıl', 'egzersiz aleti', 'krampon', 'spor çantası', 'matara', 'kamp', 'çadır', 'uyku tulumu', 'sırt çantası', 'outdoor', 'dağcılık', 'balıkçılık', 'av malzemesi', 'bisiklet aksesuar'],
+            'Oyuncak & Hobi': ['oyuncak', 'lego', 'puzzle', 'bebek', 'araba', 'robot', 'maket', 'model', 'hobi', 'koleksiyon', 'kart', 'board game', 'yapboz', 'eğitici oyuncak', 'akıllı oyuncak', 'dronе', 'rc araba', 'kukla', 'pelüş', 'oyun hamuru'],
+            'Otomotiv': ['araba', 'otomotiv', 'lastik', 'jant', 'akü', 'motor yağı', 'filtre', 'far', 'silecek', 'aksesuar', 'döşeme', 'koltuk kılıfı', 'direksiyon kılıfı', 'navigasyon', 'kamera', 'park sensörü', 'tampon', 'kaporta', 'egzoz', 'suspansiyon'],
+            'Kitap & Ofis': ['kitap', 'roman', 'hikaye', 'ders kitabı', 'kırtasiye', 'kalem', 'defter', 'silgi', 'kalemlik', 'çanta', 'dosya', 'klasör', 'yazıcı', 'tarayıcı', 'kağıt', 'mürekkep', 'toner', 'zımba', 'makas', 'bant', 'posta', 'ofis malzemesi'],
+            'Anne & Bebek': ['bebek', 'çocuk', 'bebek bezi', 'mama', 'biberon', 'emzik', 'oyuncak', 'giysi', 'tulum', 'body', 'pijama', 'ayakkabı', 'şapka', 'battaniye', 'karyola', 'beşik', 'ana kucağı', 'oyun parkı', 'banyo', 'şampuan', 'pişik kremi'],
+            'Süpermarket': ['gıda', 'yiyecek', 'içecek', 'atıştırmalık', 'çikolata', 'bisküvi', 'kahve', 'çay', 'su', 'meyve suyu', 'süt', 'yoğurt', 'peynir', 'zeytin', 'reçel', 'bal', 'sabun', 'deterjan', 'şampuan', 'diş macunu', 'tuvalet kağıdı', 'peçete']
+        };
 
         // Event Listeners
         document.getElementById('search-btn').addEventListener('click', performSearch);
@@ -1199,6 +1213,28 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
+        // Kategori tahmini yap
+        function predictCategory(productTitle) {
+            const title = productTitle.toLowerCase();
+            
+            // Önce mevcut kategoriyi kontrol et
+            if (productTitle.category && productTitle.category !== 'Diğer') {
+                return productTitle.category;
+            }
+            
+            // Anahtar kelimelere göre kategori tahmini
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                for (const keyword of keywords) {
+                    if (title.includes(keyword.toLowerCase())) {
+                        return category;
+                    }
+                }
+            }
+            
+            // Eşleşme yoksa varsayılan kategori
+            return 'Diğer';
+        }
+
         // Excel yükleme
         async function loadExcelFile() {
             try {
@@ -1228,7 +1264,7 @@
                         discount: '%40',
                         code: 'SPOR40',
                         link: '#',
-                        category: 'Spor',
+                        category: 'Moda',
                         rating: '92',
                         sales: '800'
                     },
@@ -1297,19 +1333,28 @@
                         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
                         
                         if (jsonData.length > 0) {
-                            allProducts = jsonData.map(item => ({
-                                id: item.ProductId || Math.random().toString(36).substr(2, 9),
-                                title: item['Product Desc'] || item.title || 'Ürün',
-                                image: item['Image Url'] || item.image || 'https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok',
-                                originalPrice: item['Origin Price'] || item.originalPrice || '₺0',
-                                discountPrice: item['Discount Price'] || item.discountPrice || '₺0', 
-                                discount: item.Discount || item.discount || '%0',
-                                code: item['Code Name'] || item.code || '',
-                                link: item['Promotion Url'] || item.link || '#',
-                                category: item.Category || item.category || 'Diğer',
-                                rating: item['Positive Feedback'] || item.rating || '0',
-                                sales: item.Sales180Day || item.sales || '0'
-                            }));
+                            allProducts = jsonData.map(item => {
+                                const product = {
+                                    id: item.ProductId || Math.random().toString(36).substr(2, 9),
+                                    title: item['Product Desc'] || item.title || 'Ürün',
+                                    image: item['Image Url'] || item.image || 'https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok',
+                                    originalPrice: item['Origin Price'] || item.originalPrice || '₺0',
+                                    discountPrice: item['Discount Price'] || item.discountPrice || '₺0', 
+                                    discount: item.Discount || item.discount || '%0',
+                                    code: item['Code Name'] || item.code || '',
+                                    link: item['Promotion Url'] || item.link || '#',
+                                    category: item.Category || item.category || '',
+                                    rating: item['Positive Feedback'] || item.rating || '0',
+                                    sales: item.Sales180Day || item.sales || '0'
+                                };
+                                
+                                // Kategori yoksa tahmin et
+                                if (!product.category) {
+                                    product.category = predictCategory(product.title);
+                                }
+                                
+                                return product;
+                            });
                             console.log("Excel'den", allProducts.length, "ürün yüklendi");
                         } else {
                             throw new Error('Excel dosyası boş');
