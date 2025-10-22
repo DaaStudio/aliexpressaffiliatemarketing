@@ -574,6 +574,58 @@
             color: white;
         }
 
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.disabled:hover {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-color: var(--gray);
+        }
+
+        .pagination-info {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 0 15px;
+        }
+
         /* Glow Animation */
         @keyframes glow {
             0%, 100% {
@@ -705,6 +757,16 @@
                 right: auto;
                 left: 0;
             }
+
+            .pagination {
+                gap: 5px;
+            }
+            
+            .pagination-btn {
+                padding: 6px 12px;
+                min-width: 35px;
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -724,6 +786,16 @@
             .product-title {
                 font-size: 0.85rem;
                 height: 40px;
+            }
+
+            .pagination {
+                gap: 3px;
+            }
+            
+            .pagination-btn {
+                padding: 5px 8px;
+                min-width: 30px;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -824,6 +896,14 @@
             <!-- Products Grid -->
             <div id="products" class="products-grid"></div>
 
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prev-page" data-translate="prevPage">Önceki</button>
+                <div id="page-numbers" class="page-numbers"></div>
+                <button class="pagination-btn" id="next-page" data-translate="nextPage">Sonraki</button>
+                <div class="pagination-info" id="page-info"></div>
+            </div>
+
             <!-- No Favorites Message -->
             <div class="no-favorites" id="no-favorites">
                 <i class="far fa-heart"></i>
@@ -920,7 +1000,11 @@
                 lightMode: "Aydınlık Mod",
                 noProductsFound: "Aranan kriterlere uygun ürün bulunamadı.",
                 discountCode: "İndirim Kodu:",
-                buyNow: "Hemen Al"
+                buyNow: "Hemen Al",
+                prevPage: "Önceki",
+                nextPage: "Sonraki",
+                pageInfo: "Sayfa {current} / {total} - Toplam {count} ürün",
+                loadingPage: "Sayfa yükleniyor..."
             },
             en: {
                 siteTitle: "Budget Buddy Discounts",
@@ -967,7 +1051,11 @@
                 lightMode: "Light Mode",
                 noProductsFound: "No products found matching your criteria.",
                 discountCode: "Discount Code:",
-                buyNow: "Buy Now"
+                buyNow: "Buy Now",
+                prevPage: "Previous",
+                nextPage: "Next",
+                pageInfo: "Page {current} / {total} - Total {count} products",
+                loadingPage: "Loading page..."
             },
             es: {
                 siteTitle: "Budget Buddy Discounts",
@@ -1014,7 +1102,11 @@
                 lightMode: "Modo Claro",
                 noProductsFound: "No se encontraron productos que coincidan con tus criterios.",
                 discountCode: "Código de Descuento:",
-                buyNow: "Comprar Ahora"
+                buyNow: "Comprar Ahora",
+                prevPage: "Anterior",
+                nextPage: "Siguiente",
+                pageInfo: "Página {current} / {total} - Total {count} productos",
+                loadingPage: "Cargando página..."
             },
             fr: {
                 siteTitle: "Budget Buddy Discounts",
@@ -1061,7 +1153,11 @@
                 lightMode: "Mode Clair",
                 noProductsFound: "Aucun produit trouvé correspondant à vos critères.",
                 discountCode: "Code de Réduction:",
-                buyNow: "Acheter Maintenant"
+                buyNow: "Acheter Maintenant",
+                prevPage: "Précédent",
+                nextPage: "Suivant",
+                pageInfo: "Page {current} / {total} - Total {count} produits",
+                loadingPage: "Chargement de la page..."
             }
         };
 
@@ -1309,7 +1405,7 @@
         // Global değişkenler
         let allProducts = [];
         let displayedProducts = 0;
-        const productsPerPage = 12;
+        const productsPerPage = 50; // Sayfa başına 50 ürün
         let currentFilter = 'all';
         let currentCategory = 'all';
         let currentSort = 'default';
@@ -1318,6 +1414,11 @@
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         let currentLanguage = localStorage.getItem('language') || 'tr';
         let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Sayfalama değişkenleri
+        let currentPage = 1;
+        let totalPages = 1;
+        let filteredProducts = [];
 
         // DOM Elements
         const productsGrid = document.getElementById('products');
@@ -1329,6 +1430,11 @@
         const noFavorites = document.getElementById('no-favorites');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
+        const pagination = document.getElementById('pagination');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const pageNumbers = document.getElementById('page-numbers');
+        const pageInfo = document.getElementById('page-info');
 
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
@@ -1357,6 +1463,8 @@
         document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
         document.getElementById('language-btn').addEventListener('click', toggleLanguageDropdown);
         document.getElementById('clear-all-favorites').addEventListener('click', clearAllFavorites);
+        prevPageBtn.addEventListener('click', goToPrevPage);
+        nextPageBtn.addEventListener('click', goToNextPage);
 
         // Sayfa dışına tıklanınca dropdown'ı kapat
         document.addEventListener('click', (e) => {
@@ -1365,7 +1473,7 @@
             }
         });
 
-        // Scroll event
+        // Scroll event - Artık sadece loading indicator için
         window.addEventListener('scroll', handleScroll);
 
         // Tema değiştirme
@@ -1433,6 +1541,11 @@
                     // Özel durumlar için değişkenleri değiştir
                     if (key === 'favoritesCount') {
                         translatedText = translatedText.replace('{count}', favorites.length);
+                    } else if (key === 'pageInfo' && filteredProducts.length > 0) {
+                        translatedText = translatedText
+                            .replace('{current}', currentPage)
+                            .replace('{total}', totalPages)
+                            .replace('{count}', filteredProducts.length);
                     }
                     
                     if (element.tagName === 'INPUT') {
@@ -1516,87 +1629,38 @@
             try {
                 console.log("Excel yükleniyor...");
                 
-                // Test ürünleri - Excel yoksa bunlar gösterilecek
-                const testProducts = [
-                    {
-                        id: '1',
-                        title: 'Smartphone High Discount New 2024',
-                        image: 'https://via.placeholder.com/300x200/4A6FFF/FFFFFF?text=Telefon',
-                        originalPrice: '₺1,999',
-                        discountPrice: '₺999',
-                        discount: '%50',
-                        code: 'INDIRIM50',
-                        link: '#',
-                        category: 'Elektronik',
-                        rating: '95',
-                        sales: '1500'
-                    },
-                    {
-                        id: '2', 
-                        title: 'Sports Shoes Trend Product with Best Design',
-                        image: 'https://via.placeholder.com/300x200/FF4747/FFFFFF?text=Ayakkabı',
-                        originalPrice: '₺499',
-                        discountPrice: '₺299',
-                        discount: '%40',
-                        code: 'SPOR40',
-                        link: '#',
-                        category: 'Moda',
-                        rating: '92',
-                        sales: '800'
-                    },
-                    {
-                        id: '3',
-                        title: 'Cosmetic Set Special Offer for Women',
-                        image: 'https://via.placeholder.com/300x200/28A745/FFFFFF?text=Kozmetik',
-                        originalPrice: '₺299',
-                        discountPrice: '₺149',
-                        discount: '%50',
-                        code: 'GUZEL50',
-                        link: '#',
-                        category: 'Kozmetik',
-                        rating: '88',
-                        sales: '1200'
-                    },
-                    {
-                        id: '4',
-                        title: 'Laptop Super Discount Gaming Computer',
-                        image: 'https://via.placeholder.com/300x200/FFC107/000000?text=Laptop',
-                        originalPrice: '₺3,999',
-                        discountPrice: '₺2,499',
-                        discount: '%38',
-                        code: 'TEKNOLOJI38',
-                        link: '#',
-                        category: 'Elektronik',
-                        rating: '96',
-                        sales: '2000'
-                    },
-                    {
-                        id: '5',
-                        title: 'Bluetooth Headphone Premium Wireless',
-                        image: 'https://via.placeholder.com/300x200/6C757D/FFFFFF?text=Kulaklık',
-                        originalPrice: '₺399',
-                        discountPrice: '₺199',
-                        discount: '%50',
-                        code: 'SES50',
-                        link: '#',
-                        category: 'Elektronik',
-                        rating: '89',
-                        sales: '750'
-                    },
-                    {
-                        id: '6',
-                        title: 'Smart Watch Fitness Tracker with Heart Rate Monitor',
-                        image: 'https://via.placeholder.com/300x200/17A2B8/FFFFFF?text=Saat',
-                        originalPrice: '₺799',
-                        discountPrice: '₺499',
-                        discount: '%38',
-                        code: 'FITNESS38',
-                        link: '#',
-                        category: 'Elektronik',
-                        rating: '91',
-                        sales: '1100'
-                    }
+                // Daha fazla test ürünü oluştur
+                const testProducts = [];
+                const categories = ['Elektronik', 'Moda', 'Ev & Yaşam', 'Kozmetik', 'Spor & Outdoor'];
+                const products = [
+                    'Smartphone', 'Laptop', 'Tablet', 'Headphones', 'Smart Watch',
+                    'T-Shirt', 'Shoes', 'Jacket', 'Bag', 'Sunglasses',
+                    'Sofa', 'Chair', 'Lamp', 'Kitchen Set', 'Bedding',
+                    'Makeup Set', 'Perfume', 'Skincare', 'Lipstick', 'Foundation',
+                    'Fitness Tracker', 'Yoga Mat', 'Sports Shoes', 'Bicycle', 'Camping Tent'
                 ];
+
+                for (let i = 1; i <= 150; i++) {
+                    const category = categories[Math.floor(Math.random() * categories.length)];
+                    const product = products[Math.floor(Math.random() * products.length)];
+                    const discount = Math.floor(Math.random() * 50) + 10;
+                    const originalPrice = Math.floor(Math.random() * 1000) + 100;
+                    const discountPrice = Math.floor(originalPrice * (100 - discount) / 100);
+                    
+                    testProducts.push({
+                        id: i.toString(),
+                        title: `${product} ${i} - Special Offer ${2024 + i}`,
+                        image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=Product${i}`,
+                        originalPrice: `₺${originalPrice}`,
+                        discountPrice: `₺${discountPrice}`,
+                        discount: `%${discount}`,
+                        code: `CODE${i}`,
+                        link: '#',
+                        category: category,
+                        rating: (Math.random() * 10 + 85).toFixed(0),
+                        sales: Math.floor(Math.random() * 2000) + 100
+                    });
+                }
 
                 // Gerçek Excel dosyasını yükle
                 try {
@@ -1614,7 +1678,7 @@
                                 const product = {
                                     id: item.ProductId || Math.random().toString(36).substr(2, 9),
                                     title: originalTitle,
-                                    originalTitle: originalTitle, // Orijinal başlığı sakla
+                                    originalTitle: originalTitle,
                                     image: item['Image Url'] || item.image || 'https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok',
                                     originalPrice: item['Origin Price'] || item.originalPrice || '₺0',
                                     discountPrice: item['Discount Price'] || item.discountPrice || '₺0', 
@@ -1626,7 +1690,6 @@
                                     sales: item.Sales180Day || item.sales || '0'
                                 };
                                 
-                                // Kategori yoksa tahmin et
                                 if (!product.category) {
                                     product.category = predictCategory(product.title);
                                 }
@@ -1644,7 +1707,7 @@
                     console.log("Excel yüklenemedi, test verileri kullanılıyor:", error.message);
                     allProducts = testProducts.map(product => ({
                         ...product,
-                        originalTitle: product.title // Test ürünleri için de orijinal başlığı sakla
+                        originalTitle: product.title
                     }));
                 }
 
@@ -1682,6 +1745,7 @@
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCategory = btn.dataset.category;
+                    currentPage = 1; // Kategori değişince 1. sayfaya dön
                     filterAndDisplayProducts();
                 });
             });
@@ -1692,6 +1756,7 @@
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentFilter = btn.dataset.filter;
+                    currentPage = 1; // Filtre değişince 1. sayfaya dön
                     
                     if (currentFilter === 'favorites') {
                         favoritesManagement.classList.add('show');
@@ -1706,13 +1771,12 @@
             statusInfo.style.display = 'none';
             mainContent.style.display = 'block';
             
-            displayedProducts = 0;
             filterAndDisplayProducts();
         }
 
         // Filtrele ve göster
         function filterAndDisplayProducts() {
-            let filteredProducts = [...allProducts];
+            filteredProducts = [...allProducts];
             
             // Kategori filtresi
             if (currentCategory !== 'all') {
@@ -1747,15 +1811,23 @@
             // Sıralama
             applySorting(filteredProducts);
             
-            displayedProducts = 0;
-            productsGrid.innerHTML = '';
-            hasMoreProducts = true;
-            loadMoreProducts();
+            // Sayfa sayısını hesapla
+            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            
+            // Sayfalama kontrollerini göster/gizle
+            if (totalPages > 1) {
+                pagination.style.display = 'flex';
+            } else {
+                pagination.style.display = 'none';
+            }
+            
+            displayCurrentPage();
         }
 
         // Sıralama
         function handleSortChange() {
             currentSort = document.getElementById('sort-select').value;
+            currentPage = 1; // Sıralama değişince 1. sayfaya dön
             filterAndDisplayProducts();
         }
 
@@ -1787,76 +1859,110 @@
             return match ? parseInt(match[0]) : 0;
         }
 
-        // Daha fazla ürün yükle
-        function loadMoreProducts() {
-            if (isLoading || !hasMoreProducts) return;
-            
-            isLoading = true;
-            loadingIndicator.style.display = 'block';
-            
-            setTimeout(() => {
-                const filteredProducts = getFilteredProducts();
-                const productsToShow = filteredProducts.slice(displayedProducts, displayedProducts + productsPerPage);
-                
-                if (productsToShow.length === 0) {
-                    hasMoreProducts = false;
-                    loadingIndicator.style.display = 'none';
-                    isLoading = false;
-                    
-                    // Eğer hiç ürün yoksa mesaj göster
-                    if (displayedProducts === 0) {
-                        productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px;">${translations[currentLanguage].noProductsFound}</p>`;
-                    }
-                    return;
-                }
-                
-                renderProducts(productsToShow);
-                displayedProducts += productsToShow.length;
-                
-                if (displayedProducts >= filteredProducts.length) {
-                    hasMoreProducts = false;
-                    loadingIndicator.style.display = 'none';
-                }
-                
-                isLoading = false;
-            }, 500);
+        // Sayfalama fonksiyonları
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayCurrentPage();
+            }
         }
 
-        function getFilteredProducts() {
-            let filtered = [...allProducts];
-            
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayCurrentPage();
             }
-            
-            switch(currentFilter) {
-                case 'high-discount':
-                    filtered = filtered.filter(p => {
-                        const discount = parseInt(p.discount) || 0;
-                        return discount >= 40;
-                    });
-                    break;
-                case 'best-seller':
-                    filtered = filtered.filter(p => {
-                        const sales = parseInt(p.sales) || 0;
-                        return sales >= 1000;
-                    });
-                    break;
-                case 'high-rating':
-                    filtered = filtered.filter(p => {
-                        const rating = parseFloat(p.rating) || 0;
-                        return rating >= 90;
-                    });
-                    break;
-                case 'favorites':
-                    filtered = filtered.filter(p => favorites.includes(p.id));
-                    break;
-            }
-            
-            return applySorting(filtered);
         }
 
-        // Scroll handler
+        function goToPage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayCurrentPage();
+            }
+        }
+
+        // Mevcut sayfayı göster
+        function displayCurrentPage() {
+            const startIndex = (currentPage - 1) * productsPerPage;
+            const endIndex = startIndex + productsPerPage;
+            const productsToShow = filteredProducts.slice(startIndex, endIndex);
+            
+            renderProducts(productsToShow);
+            updatePaginationControls();
+            updatePageInfo();
+            
+            // Sayfa başına scroll et
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Sayfalama kontrollerini güncelle
+        function updatePaginationControls() {
+            // Önceki/Sonraki butonlarını güncelle
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+            
+            if (currentPage === 1) {
+                prevPageBtn.classList.add('disabled');
+            } else {
+                prevPageBtn.classList.remove('disabled');
+            }
+            
+            if (currentPage === totalPages) {
+                nextPageBtn.classList.add('disabled');
+            } else {
+                nextPageBtn.classList.remove('disabled');
+            }
+            
+            // Sayfa numaralarını oluştur
+            pageNumbers.innerHTML = '';
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            // İlk sayfa her zaman gösterilsin
+            if (startPage > 1) {
+                addPageButton(1);
+                if (startPage > 2) {
+                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
+                }
+            }
+            
+            // Sayfa numaralarını ekle
+            for (let i = startPage; i <= endPage; i++) {
+                addPageButton(i);
+            }
+            
+            // Son sayfa her zaman gösterilsin
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
+                }
+                addPageButton(totalPages);
+            }
+        }
+
+        function addPageButton(page) {
+            const button = document.createElement('button');
+            button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
+            button.textContent = page;
+            button.addEventListener('click', () => goToPage(page));
+            pageNumbers.appendChild(button);
+        }
+
+        // Sayfa bilgisini güncelle
+        function updatePageInfo() {
+            const startIndex = (currentPage - 1) * productsPerPage + 1;
+            const endIndex = Math.min(currentPage * productsPerPage, filteredProducts.length);
+            
+            if (translations[currentLanguage]) {
+                pageInfo.textContent = translations[currentLanguage].pageInfo
+                    .replace('{current}', currentPage)
+                    .replace('{total}', totalPages)
+                    .replace('{count}', filteredProducts.length);
+            }
+        }
+
+        // Scroll handler - Artık sadece loading için
         function handleScroll() {
             if (isLoading || !hasMoreProducts) return;
 
@@ -1864,8 +1970,9 @@
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
 
-            if (scrollTop + windowHeight >= documentHeight - 100) {
-                loadMoreProducts();
+            // Sadece en alttaysa ve daha fazla ürün varsa yükle
+            if (scrollTop + windowHeight >= documentHeight - 100 && currentPage < totalPages) {
+                goToNextPage();
             }
         }
 
@@ -1875,12 +1982,17 @@
                 if (currentFilter === 'favorites') {
                     noFavorites.style.display = 'block';
                     productsGrid.style.display = 'none';
+                    pagination.style.display = 'none';
+                } else {
+                    productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px;">${translations[currentLanguage].noProductsFound}</p>`;
+                    pagination.style.display = 'none';
                 }
                 return;
             }
 
             noFavorites.style.display = 'none';
             productsGrid.style.display = 'grid';
+            productsGrid.innerHTML = '';
 
             products.forEach(product => {
                 const isFavorite = favorites.includes(product.id);
@@ -1947,6 +2059,7 @@
             updateFavoritesUI();
             
             if (currentFilter === 'favorites') {
+                currentPage = 1; // Favoriler değişince 1. sayfaya dön
                 filterAndDisplayProducts();
             }
         }
@@ -1961,6 +2074,7 @@
                 updateFavoritesUI();
                 
                 if (currentFilter === 'favorites') {
+                    currentPage = 1; // Favoriler değişince 1. sayfaya dön
                     filterAndDisplayProducts();
                 }
             }
@@ -1974,6 +2088,7 @@
                 updateFavoritesUI();
                 
                 if (currentFilter === 'favorites') {
+                    currentPage = 1; // Favoriler değişince 1. sayfaya dön
                     filterAndDisplayProducts();
                 }
             }
@@ -2017,6 +2132,7 @@
         function performSearch() {
             const term = document.getElementById('search-input').value.toLowerCase().trim();
             if (!term) {
+                currentPage = 1; // Arama temizlenince 1. sayfaya dön
                 filterAndDisplayProducts();
                 return;
             }
@@ -2030,17 +2146,17 @@
                        (p.category && p.category.toLowerCase().includes(term));
             });
             
-            displayedProducts = 0;
-            productsGrid.innerHTML = '';
-            hasMoreProducts = true;
+            filteredProducts = filtered;
+            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            currentPage = 1; // Yeni aramada 1. sayfaya dön
             
-            if (filtered.length === 0) {
-                productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px;">${translations[currentLanguage].noProductsFound}</p>`;
+            if (totalPages > 1) {
+                pagination.style.display = 'flex';
             } else {
-                renderProducts(filtered.slice(0, productsPerPage));
-                displayedProducts = Math.min(productsPerPage, filtered.length);
-                hasMoreProducts = displayedProducts < filtered.length;
+                pagination.style.display = 'none';
             }
+            
+            displayCurrentPage();
         }
 
         function copyCode(code, event) {
@@ -2101,6 +2217,7 @@
         window.removeFavorite = removeFavorite;
         window.copyCode = copyCode;
         window.shareProduct = shareProduct;
+        window.goToPage = goToPage;
 
     </script>
 </body>
