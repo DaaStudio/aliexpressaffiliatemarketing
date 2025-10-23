@@ -372,7 +372,7 @@
         }
 
         .product-image-container {
-            height: 140px;
+            height: 160px;
             overflow: hidden;
             position: relative;
             cursor: pointer;
@@ -387,7 +387,7 @@
             height: 100%;
             object-fit: contain;
             transition: var(--transition);
-            padding: 8px;
+            padding: 5px;
         }
 
         .product-card:hover .product-image {
@@ -801,7 +801,7 @@
             }
             
             .product-image-container {
-                height: 130px;
+                height: 150px;
             }
             
             .language-dropdown {
@@ -853,7 +853,7 @@
             }
             
             .product-actions {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 4px;
             }
             
@@ -892,7 +892,7 @@
             }
             
             .product-image-container {
-                height: 120px;
+                height: 140px;
             }
             
             .product-info {
@@ -962,7 +962,7 @@
             }
             
             .product-image-container {
-                height: 150px;
+                height: 160px;
             }
             
             .header-content {
@@ -1685,9 +1685,6 @@
             }
         });
 
-        // Scroll event - Artık sadece loading indicator için
-        window.addEventListener('scroll', handleScroll);
-
         // Tema değiştirme
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -2171,20 +2168,6 @@
                     .replace('{current}', currentPage)
                     .replace('{total}', totalPages)
                     .replace('{count}', filteredProducts.length);
-            }
-        }
-
-        // Scroll handler - Artık sadece loading için
-        function handleScroll() {
-            if (isLoading || !hasMoreProducts) return;
-
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-
-            // Sadece en alttaysa ve daha fazla ürün varsa yükle
-            if (scrollTop + windowHeight >= documentHeight - 100 && currentPage < totalPages) {
-                goToNextPage();
             }
         }
 
