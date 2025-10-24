@@ -1412,18 +1412,136 @@
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
 
-        // Anahtar kelimeler ve kategoriler
+        // AliExpress Kategorileri ve Anahtar Kelimeleri
         const categoryKeywords = {
-            'Elektronik': ['telefon', 'akıllı telefon', 'iphone', 'samsung', 'huawei', 'xiaomi', 'laptop', 'tablet', 'bilgisayar', 'kulaklık', 'bluetooth', 'şarj', 'powerbank', 'kablo', 'adaptör', 'monitör', 'mouse', 'klavye', 'hoparlör', 'televizyon', 'tv', 'kamera', 'fotoğraf makinesi', 'drone', 'oyun konsolu', 'playstation', 'xbox', 'nintendo'],
-            'Moda': ['tişört', 'gömlek', 'pantolon', 'jean', 'elbise', 'etek', 'ceket', 'mont', 'kazak', 'hırka', 'ayakkabı', 'spor ayakkabı', 'topuklu', 'sandalet', 'çanta', 'sırt çantası', 'cüzdan', 'takı', 'kolye', 'küpe', 'bilezik', 'yüzük', 'saat', 'güneş gözlüğü', 'şapka', 'bere', 'atkı', 'eldiven'],
-            'Ev & Yaşam': ['mobilya', 'kanepe', 'koltuk', 'masa', 'sandalye', 'yatak', 'dolap', 'perde', 'halı', 'kilim', 'yastık', 'yatak örtüsü', 'nevresim', 'mutfak', 'tencere', 'tava', 'bıçak', 'bardak', 'tabak', 'elektrikli süpürge', 'ütü', 'saç kurutma', 'ısıtıcı', 'vantilatör', 'klima', 'lampa', 'avize', 'duvar saati'],
-            'Kozmetik': ['makyaj', 'fondöten', 'ruj', 'far', 'maskara', 'allık', 'fondöten', 'krem', 'nemlendirici', 'güneş kremi', 'parfüm', 'deodorant', 'şampuan', 'saç kremi', 'saç boyası', 'ojе', 'makyaj fırçası', 'makyaj seti', 'cilt bakım', 'yüz maskesi', 'losyon', 'dudak kremi'],
-            'Spor & Outdoor': ['spor', 'fitness', 'koşu', 'yürüyüş', 'bisiklet', 'yoga', 'pilates', 'dambıl', 'egzersiz aleti', 'krampon', 'spor çantası', 'matara', 'kamp', 'çadır', 'uyku tulumu', 'sırt çantası', 'outdoor', 'dağcılık', 'balıkçılık', 'av malzemesi', 'bisiklet aksesuar'],
-            'Oyuncak & Hobi': ['oyuncak', 'lego', 'puzzle', 'bebek', 'araba', 'robot', 'maket', 'model', 'hobi', 'koleksiyon', 'kart', 'board game', 'yapboz', 'eğitici oyuncak', 'akıllı oyuncak', 'dronе', 'rc araba', 'kukla', 'pelüş', 'oyun hamuru'],
-            'Otomotiv': ['araba', 'otomotiv', 'lastik', 'jant', 'akü', 'motor yağı', 'filtre', 'far', 'silecek', 'aksesuar', 'döşeme', 'koltuk kılıfı', 'direksiyon kılıfı', 'navigasyon', 'kamera', 'park sensörü', 'tampon', 'kaporta', 'egzoz', 'suspansiyon'],
-            'Kitap & Ofis': ['kitap', 'roman', 'hikaye', 'ders kitabı', 'kırtasiye', 'kalem', 'defter', 'silgi', 'kalemlik', 'çanta', 'dosya', 'klasör', 'yazıcı', 'tarayıcı', 'kağıt', 'mürekkep', 'toner', 'zımba', 'makas', 'bant', 'posta', 'ofis malzemesi'],
-            'Anne & Bebek': ['bebek', 'çocuk', 'bebek bezi', 'mama', 'biberon', 'emzik', 'oyuncak', 'giysi', 'tulum', 'body', 'pijama', 'ayakkabı', 'şapka', 'battaniye', 'karyola', 'beşik', 'ana kucağı', 'oyun parkı', 'banyo', 'şampuan', 'pişik kremi'],
-            'Süpermarket': ['gıda', 'yiyecek', 'içecek', 'atıştırmalık', 'çikolata', 'bisküvi', 'kahve', 'çay', 'su', 'meyve suyu', 'süt', 'yoğurt', 'peynir', 'zeytin', 'reçel', 'bal', 'sabun', 'deterjan', 'şampuan', 'diş macunu', 'tuvalet kağıdı', 'peçete']
+            'Automotive & Motorcycle': [
+                'car', 'auto', 'automotive', 'motorcycle', 'bike', 'vehicle', 'tire', 'wheel', 'engine', 
+                'brake', 'exhaust', 'headlight', 'taillight', 'mirror', 'seat', 'helmet', 'gloves', 
+                'jacket', 'oil', 'filter', 'battery', 'charger', 'tool', 'accessory', 'parts', 'gps',
+                'dash cam', 'car camera', 'car audio', 'speaker', 'subwoofer', 'amplifier', 'alarm',
+                'lock', 'cover', 'mat', 'cleaner', 'polish', 'wax', 'detailing', 'maintenance'
+            ],
+            'Beauty & Health': [
+                'makeup', 'cosmetic', 'skincare', 'beauty', 'health', 'facial', 'cream', 'lotion', 
+                'serum', 'moisturizer', 'cleanser', 'toner', 'mask', 'makeup brush', 'palette', 
+                'lipstick', 'mascara', 'eyeshadow', 'foundation', 'concealer', 'blush', 'highlighter',
+                'perfume', 'fragrance', 'deodorant', 'shampoo', 'conditioner', 'hair care', 'styling',
+                'hair dryer', 'straightener', 'curler', 'trimmer', 'shaver', 'epilator', 'massager',
+                'scale', 'thermometer', 'blood pressure', 'fitness', 'vitamin', 'supplement'
+            ],
+            'Phones & Telecommunications': [
+                'smartphone', 'phone', 'mobile', 'iphone', 'samsung', 'huawei', 'xiaomi', 'oppo', 
+                'vivo', 'oneplus', 'android', 'ios', '5g', '4g', 'case', 'cover', 'screen protector',
+                'charger', 'cable', 'adapter', 'power bank', 'headphone', 'earphone', 'earbud', 
+                'bluetooth', 'wireless', 'smartwatch', 'watch', 'tablet', 'ipad', 'accessory',
+                'sim card', 'router', 'modem', 'antenna', 'repeater', 'telecommunication'
+            ],
+            'Home Improvement & Lighting': [
+                'home improvement', 'lighting', 'lamp', 'light', 'led', 'bulb', 'fixture', 'ceiling',
+                'wall', 'floor', 'desk', 'outdoor', 'garden', 'solar', 'motion', 'sensor', 'switch',
+                'outlet', 'extension', 'cord', 'tool', 'drill', 'saw', 'hammer', 'screwdriver',
+                'wrench', 'pliers', 'tape', 'measure', 'level', 'paint', 'brush', 'roller', 'toolbox',
+                'ladder', 'safety', 'workwear', 'storage', 'shelf', 'rack', 'organization'
+            ],
+            'Jewelry, Watches & Accessories': [
+                'jewelry', 'watch', 'accessory', 'necklace', 'bracelet', 'ring', 'earring', 'pendant',
+                'chain', 'bangle', 'anklet', 'brooch', 'cufflink', 'tie clip', 'money clip', 'keychain',
+                'sunglasses', 'glasses', 'case', 'luxury', 'fashion', 'diamond', 'gold', 'silver',
+                'platinum', 'pearl', 'crystal', 'gemstone', 'birthstone', 'engraving', 'personalized',
+                'smart watch', 'fitness tracker', 'activity band', 'watch band', 'strap'
+            ],
+            'Women\'s Clothing': [
+                'women', 'clothing', 'dress', 'skirt', 'blouse', 'shirt', 'top', 't-shirt', 'sweater',
+                'cardigan', 'jacket', 'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings',
+                'shorts', 'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
+                'bikini', 'swimsuit', 'cover up', 'activewear', 'yoga', 'fitness', 'workout', 'socks',
+                'tights', 'stockings', 'maternity', 'plus size', 'petite', 'fashion', 'trendy'
+            ],
+            'Electronics': [
+                'electronics', 'electronic', 'gadget', 'device', 'tech', 'technology', 'smart', 'home',
+                'audio', 'video', 'tv', 'television', 'monitor', 'display', 'projector', 'speaker',
+                'soundbar', 'headphone', 'earphone', 'microphone', 'camera', 'lens', 'drone', 'action',
+                'gopro', 'tripod', 'gimbal', 'stabilizer', 'computer', 'laptop', 'tablet', 'printer',
+                'scanner', 'keyboard', 'mouse', 'webcam', 'router', 'nas', 'storage', 'hard drive'
+            ],
+            'Men\'s Clothing': [
+                'men', 'clothing', 'shirt', 't-shirt', 'polo', 'button down', 'dress shirt', 'casual',
+                'sweater', 'hoodie', 'sweatshirt', 'jacket', 'coat', 'blazer', 'suit', 'pants', 'jeans',
+                'chinos', 'shorts', 'swimwear', 'trunks', 'underwear', 'boxers', 'briefs', 'socks',
+                'tie', 'belt', 'wallet', 'accessory', 'workwear', 'uniform', 'activewear', 'fitness',
+                'outdoor', 'hiking', 'fishing', 'hunting', 'formal', 'business', 'casual', 'streetwear'
+            ],
+            'Home & Garden': [
+                'home', 'garden', 'furniture', 'decor', 'decoration', 'accessory', 'kitchen', 'bath',
+                'bedroom', 'living', 'dining', 'outdoor', 'patio', 'lawn', 'plant', 'flower', 'pot',
+                'vase', 'candle', 'diffuser', 'wall art', 'picture', 'frame', 'clock', 'mirror',
+                'rug', 'carpet', 'mat', 'curtain', 'blind', 'shade', 'pillow', 'cushion', 'blanket',
+                'throw', 'bedding', 'sheet', 'duvet', 'comforter', 'quilt', 'towel', 'bath mat'
+            ],
+            'Toys & Games': [
+                'toy', 'game', 'kids', 'children', 'baby', 'educational', 'learning', 'development',
+                'puzzle', 'building', 'block', 'lego', 'brick', 'doll', 'action figure', 'vehicle',
+                'car', 'truck', 'plane', 'train', 'robot', 'rc', 'remote control', 'drone', 'helicopter',
+                'board game', 'card game', 'puzzle game', 'video game', 'console', 'controller',
+                'vr', 'virtual reality', 'outdoor', 'playground', 'swing', 'slide', 'trampoline'
+            ],
+            'Luggage, Bags & Shoes': [
+                'luggage', 'bag', 'shoe', 'travel', 'suitcase', 'backpack', 'handbag', 'purse',
+                'wallet', 'briefcase', 'messenger', 'tote', 'duffel', 'garment', 'cosmetic', 'laptop',
+                'sneaker', 'athletic', 'running', 'walking', 'hiking', 'boot', 'dress', 'casual',
+                'sandals', 'flip flop', 'slipper', 'heel', 'pump', 'flat', 'loafer', 'oxford',
+                'accessory', 'organizer', 'packing', 'travel gear', 'luggage tag', 'lock'
+            ],
+            'Furniture': [
+                'furniture', 'furnishing', 'table', 'desk', 'chair', 'sofa', 'couch', 'loveseat',
+                'sectional', 'recliner', 'ottoman', 'bench', 'stool', 'bed', 'mattress', 'headboard',
+                'dresser', 'chest', 'wardrobe', 'armoire', 'cabinet', 'shelf', 'bookcase', 'entertainment',
+                'tv stand', 'console', 'coffee', 'end', 'nightstand', 'dining', 'kitchen', 'bar',
+                'counter', 'island', 'patio', 'garden', 'outdoor', 'office', 'ergonomic', 'gaming'
+            ],
+            'Computer, Office & Education': [
+                'computer', 'office', 'education', 'laptop', 'desktop', 'monitor', 'keyboard', 'mouse',
+                'printer', 'scanner', 'copier', 'fax', 'projector', 'screen', 'whiteboard', 'desk',
+                'chair', 'filing', 'cabinet', 'shelf', 'organizer', 'supply', 'pen', 'pencil', 'marker',
+                'highlighter', 'notebook', 'binder', 'folder', 'calculator', 'ruler', 'stapler',
+                'staple', 'tape', 'glue', 'scissors', 'educational', 'learning', 'teaching', 'science'
+            ],
+            'Hair Extensions & Wigs': [
+                'hair', 'extension', 'wig', 'toupee', 'weave', 'clip-in', 'tape-in', 'fusion',
+                'micro', 'strand', 'bundle', 'closure', 'frontal', 'lace', 'synthetic', 'human',
+                'remy', 'virgin', 'straight', 'wavy', 'curly', 'kinky', 'color', 'dye', 'highlight',
+                'ombre', 'balayage', 'styling', 'care', 'shampoo', 'conditioner', 'treatment',
+                'brush', 'comb', 'dryer', 'iron', 'curler', 'accessory', 'cap', 'stand'
+            ],
+            'Sports & Entertainment': [
+                'sports', 'entertainment', 'fitness', 'exercise', 'workout', 'gym', 'yoga', 'pilates',
+                'running', 'walking', 'hiking', 'camping', 'fishing', 'hunting', 'cycling', 'biking',
+                'swimming', 'diving', 'surfing', 'skiing', 'snowboarding', 'skateboarding', 'roller',
+                'team', 'soccer', 'basketball', 'football', 'baseball', 'tennis', 'golf', 'badminton',
+                'music', 'instrument', 'guitar', 'piano', 'keyboard', 'drum', 'violin', 'microphone',
+                'karaoke', 'dj', 'lighting', 'effect', 'party', 'event', 'game', 'console'
+            ],
+            'Baby & Maternity': [
+                'baby', 'maternity', 'infant', 'toddler', 'child', 'newborn', 'pregnancy', 'mother',
+                'nursery', 'crib', 'bassinet', 'bed', 'mattress', 'changing', 'table', 'dresser',
+                'storage', 'organizer', 'stroller', 'pram', 'carrier', 'sling', 'car seat', 'high chair',
+                'booster', 'bath', 'tub', 'toy', 'educational', 'development', 'clothing', 'onesie',
+                'romper', 'sleepwear', 'blanket', 'swaddle', 'feeding', 'bottle', 'pacifier', 'health'
+            ],
+            'Plus Sized Clothing': [
+                'plus size', 'plus sized', 'curvy', 'big', 'tall', 'women', 'men', 'clothing',
+                'dress', 'top', 'blouse', 'shirt', 't-shirt', 'sweater', 'cardigan', 'jacket',
+                'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings', 'shorts', 'skirt',
+                'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
+                'activewear', 'fitness', 'workout', 'fashion', 'trendy', 'stylish', 'comfort'
+            ],
+            'Pet Supplies': [
+                'pet', 'supply', 'dog', 'cat', 'puppy', 'kitten', 'food', 'treat', 'snack', 'bowl',
+                'feeder', 'waterer', 'fountain', 'bed', 'mat', 'crate', 'cage', 'carrier', 'house',
+                'shelter', 'toy', 'chew', 'bone', 'ball', 'frisbee', 'leash', 'collar', 'harness',
+                'clothing', 'costume', 'grooming', 'brush', 'comb', 'shampoo', 'conditioner', 'health',
+                'vitamin', 'supplement', 'medicine', 'first aid', 'cleaning', 'litter', 'box', 'training'
+            ]
         };
 
         // Event Listeners
@@ -1599,38 +1717,36 @@
             try {
                 console.log("Excel yükleniyor...");
                 
-                // Test ürünleri oluştur
+                // Test ürünleri oluştur - Her kategori için örnek ürünler
                 const testProducts = [];
-                const categories = ['Elektronik', 'Moda', 'Ev & Yaşam', 'Kozmetik', 'Spor & Outdoor'];
-                const products = [
-                    'Smartphone', 'Laptop', 'Tablet', 'Headphones', 'Smart Watch',
-                    'T-Shirt', 'Shoes', 'Jacket', 'Bag', 'Sunglasses',
-                    'Sofa', 'Chair', 'Lamp', 'Kitchen Set', 'Bedding',
-                    'Makeup Set', 'Perfume', 'Skincare', 'Lipstick', 'Foundation',
-                    'Fitness Tracker', 'Yoga Mat', 'Sports Shoes', 'Bicycle', 'Camping Tent'
-                ];
-
-                for (let i = 1; i <= 150; i++) {
-                    const category = categories[Math.floor(Math.random() * categories.length)];
-                    const product = products[Math.floor(Math.random() * products.length)];
-                    const discount = Math.floor(Math.random() * 50) + 10;
-                    const originalPrice = Math.floor(Math.random() * 1000) + 100;
-                    const discountPrice = Math.floor(originalPrice * (100 - discount) / 100);
+                const categories = Object.keys(categoryKeywords);
+                
+                // Her kategori için 8-10 örnek ürün oluştur
+                categories.forEach((category, categoryIndex) => {
+                    const categoryKeywordsList = categoryKeywords[category];
                     
-                    testProducts.push({
-                        id: i.toString(),
-                        title: `${product} ${i} - Special Offer ${2024 + i} with many features and great quality for everyday use`,
-                        image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=Product${i}`,
-                        originalPrice: `₺${originalPrice}`,
-                        discountPrice: `₺${discountPrice}`,
-                        discount: `%${discount}`,
-                        code: `CODE${i}`,
-                        link: '#',
-                        category: category,
-                        rating: (Math.random() * 10 + 85).toFixed(0),
-                        sales: Math.floor(Math.random() * 2000) + 100
-                    });
-                }
+                    for (let i = 1; i <= 10; i++) {
+                        const productIndex = (categoryIndex * 10) + i;
+                        const randomKeyword = categoryKeywordsList[Math.floor(Math.random() * categoryKeywordsList.length)];
+                        const discount = Math.floor(Math.random() * 50) + 10;
+                        const originalPrice = Math.floor(Math.random() * 1000) + 100;
+                        const discountPrice = Math.floor(originalPrice * (100 - discount) / 100);
+                        
+                        testProducts.push({
+                            id: productIndex.toString(),
+                            title: `${randomKeyword} ${productIndex} - Premium Quality ${category} Product with Special Features`,
+                            image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=${category.replace(/\s+/g, '+')}`,
+                            originalPrice: `₺${originalPrice}`,
+                            discountPrice: `₺${discountPrice}`,
+                            discount: `%${discount}`,
+                            code: `CODE${productIndex}`,
+                            link: '#',
+                            category: category,
+                            rating: (Math.random() * 10 + 85).toFixed(0),
+                            sales: Math.floor(Math.random() * 2000) + 100
+                        });
+                    }
+                });
 
                 // Gerçek Excel dosyasını yükle
                 try {
