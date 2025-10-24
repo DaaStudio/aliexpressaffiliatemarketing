@@ -348,54 +348,41 @@
             background: var(--primary-dark);
         }
 
-        /* Products Grid */
+        /* Products Grid - ATTIKLARIN KODDAKİ GİBİ */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
-            margin-bottom: 20px;
+            padding: 1rem;
+            max-width: 1300px;
+            margin: 0 auto;
         }
 
         .product-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            margin: 0 5px; /* Sağ ve soldan kısaltma */
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            transition: transform .2s;
         }
 
         .product-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
         .product-image-container {
-            height: 220px; /* Daha uzun resim alanı */
-            overflow: hidden;
             position: relative;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--image-border);
+            margin-bottom: .6rem;
         }
 
         .product-image {
             width: 100%;
-            height: 100%;
-            object-fit: contain; /* Resmin tamamını göster */
-            transition: var(--transition);
-            padding: 10px; /* Resim etrafında boşluk */
             border-radius: var(--border-radius);
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.03);
+            object-fit: cover;
         }
 
         .product-badge {
@@ -409,7 +396,6 @@
             font-size: 0.7rem;
             font-weight: 600;
             z-index: 2;
-            animation: glow 2s infinite;
         }
 
         .category-badge {
@@ -455,23 +441,17 @@
         }
 
         .product-info {
-            padding: 15px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
 
         .product-title {
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            height: 40px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            flex-grow: 1;
-            line-height: 1.3;
             font-weight: 600;
+            margin: .6rem 0;
+            font-size: 0.95rem;
+            min-height: 40px;
+            line-height: 1.3;
         }
 
         .product-price {
@@ -483,8 +463,8 @@
         }
 
         .current-price {
+            font-weight: bold;
             font-size: 1.1rem;
-            font-weight: 700;
             color: var(--primary);
         }
 
@@ -501,7 +481,6 @@
             border-radius: 4px;
             font-size: 0.65rem;
             font-weight: 600;
-            animation: glow 2s infinite;
         }
 
         .product-code {
@@ -540,7 +519,7 @@
         .product-actions {
             display: flex;
             gap: 8px;
-            margin-top: auto;
+            margin-top: .8rem;
         }
 
         .buy-btn {
@@ -559,7 +538,6 @@
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition);
-            min-height: 36px;
         }
 
         .buy-btn:hover {
@@ -579,7 +557,6 @@
             justify-content: center;
             transition: var(--transition);
             color: var(--text-color);
-            min-height: 36px;
         }
 
         .wishlist-btn.active {
@@ -645,16 +622,6 @@
             font-size: 0.8rem;
             margin: 0 10px;
             text-align: center;
-        }
-
-        /* Glow Animation */
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: 0 0 3px rgba(255, 71, 71, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 8px rgba(255, 71, 71, 0.8);
-            }
         }
 
         /* No Favorites */
@@ -817,10 +784,7 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
                 gap: 15px;
-            }
-            
-            .product-image-container {
-                height: 180px; /* Mobilde biraz daha kısa */
+                padding: 0.5rem;
             }
             
             .language-dropdown {
@@ -877,12 +841,8 @@
             }
             
             .buy-btn, .wishlist-btn, .share-btn {
-                min-height: 32px;
+                padding: 8px;
                 font-size: 0.7rem;
-            }
-            
-            .product-card {
-                margin: 0 2px; /* Mobilde daha az kısaltma */
             }
         }
 
@@ -912,19 +872,16 @@
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
+                padding: 0.5rem;
             }
             
-            .product-image-container {
-                height: 160px;
-            }
-            
-            .product-info {
-                padding: 10px;
+            .product-card {
+                padding: 0.8rem;
             }
             
             .product-title {
                 font-size: 0.75rem;
-                height: 32px;
+                min-height: 32px;
             }
             
             .current-price {
@@ -976,20 +933,12 @@
                 height: 20px;
                 top: 35px;
             }
-            
-            .product-card {
-                margin: 0 1px; /* Çok küçük ekranlarda minimum kısaltma */
-            }
         }
 
         @media (max-width: 360px) {
             .products-grid {
                 grid-template-columns: 1fr;
                 gap: 12px;
-            }
-            
-            .product-image-container {
-                height: 180px;
             }
             
             .header-content {
@@ -1007,19 +956,11 @@
             .hero p {
                 font-size: 0.8rem;
             }
-            
-            .product-card {
-                margin: 0; /* Çok küçük ekranlarda kısaltma yok */
-            }
         }
 
         /* Touch device improvements */
         @media (hover: none) {
             .product-card:hover {
-                transform: none;
-            }
-            
-            .product-card:hover .product-image {
                 transform: none;
             }
             
@@ -1031,14 +972,6 @@
             .pagination-btn:hover, .filter-btn:hover,
             .category-btn:hover {
                 transform: none;
-            }
-        }
-
-        /* High DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .product-image {
-                image-rendering: -webkit-optimize-contrast;
-                image-rendering: crisp-edges;
             }
         }
     </style>
@@ -1971,7 +1904,7 @@
             }
         }
 
-        // Ürünleri render et
+        // Ürünleri render et - ATTIKLARIN KODDAKİ GİBİ
         function renderProducts(products) {
             if (products.length === 0) {
                 if (currentFilter === 'favorites') {
