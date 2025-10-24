@@ -767,6 +767,139 @@
             z-index: 1003;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--header-bg);
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .categories-modal-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .category-modal-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-modal-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-modal-item:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .category-modal-item.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .category-name {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-count {
+            background: var(--gray);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .category-modal-item:hover .category-count,
+        .category-modal-item.active .category-count {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -878,6 +1011,23 @@
                 font-size: 0.85rem;
                 min-height: 36px;
             }
+            
+            /* Modal Responsive */
+            .modal-content {
+                max-width: 90%;
+            }
+            
+            .modal-header {
+                padding: 12px 15px;
+            }
+            
+            .modal-title {
+                font-size: 1rem;
+            }
+            
+            .category-modal-item {
+                padding: 10px 15px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -966,6 +1116,29 @@
                 width: 20px;
                 height: 20px;
                 top: 35px;
+            }
+            
+            /* Modal Responsive */
+            .modal-overlay {
+                padding: 10px;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+            }
+            
+            .modal-header {
+                padding: 10px 12px;
+            }
+            
+            .category-modal-item {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .category-count {
+                font-size: 0.7rem;
+                min-width: 35px;
             }
         }
 
@@ -1165,6 +1338,23 @@
         </div>
     </footer>
 
+    <!-- Categories Modal -->
+    <div class="modal-overlay" id="categories-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-translate="allCategoriesModal">Tüm Kategoriler</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="categories-modal-list" id="categories-modal-list">
+                    <!-- Kategoriler JavaScript ile eklenecek -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Çeviriler - Mobil için kısaltılmış
         const translations = {
@@ -1178,6 +1368,7 @@
                 clearAllFavorites: "Tümünü Temizle",
                 favoritesCount: "{count} favori",
                 allCategories: "Tümü",
+                allCategoriesModal: "Tüm Kategoriler",
                 filterAll: "Tümü",
                 filterHighDiscount: "İndirim",
                 filterBestSeller: "Çok Satan",
@@ -1229,6 +1420,7 @@
                 clearAllFavorites: "Clear All",
                 favoritesCount: "{count} favorites",
                 allCategories: "All",
+                allCategoriesModal: "All Categories",
                 filterAll: "All",
                 filterHighDiscount: "Discount",
                 filterBestSeller: "Best Seller",
@@ -1280,6 +1472,7 @@
                 clearAllFavorites: "Limpiar Todo",
                 favoritesCount: "{count} favoritos",
                 allCategories: "Todos",
+                allCategoriesModal: "Todas las Categorías",
                 filterAll: "Todos",
                 filterHighDiscount: "Descuento",
                 filterBestSeller: "Más Vendidos",
@@ -1331,6 +1524,7 @@
                 clearAllFavorites: "Tout Effacer",
                 favoritesCount: "{count} favoris",
                 allCategories: "Tous",
+                allCategoriesModal: "Toutes les Catégories",
                 filterAll: "Tous",
                 filterHighDiscount: "Réduction",
                 filterBestSeller: "Meilleures Ventes",
@@ -1408,6 +1602,11 @@
         const pageNumbers = document.getElementById('page-numbers');
         const pageInfo = document.getElementById('page-info');
         const copyMsg = document.getElementById('copyMsg');
+        
+        // Modal Elements
+        const categoriesModal = document.getElementById('categories-modal');
+        const categoriesModalList = document.getElementById('categories-modal-list');
+        const modalClose = document.getElementById('modal-close');
 
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
@@ -1556,6 +1755,21 @@
         document.getElementById('clear-all-favorites').addEventListener('click', clearAllFavorites);
         prevPageBtn.addEventListener('click', goToPrevPage);
         nextPageBtn.addEventListener('click', goToNextPage);
+        
+        // Modal Event Listeners
+        modalClose.addEventListener('click', closeCategoriesModal);
+        categoriesModal.addEventListener('click', function(e) {
+            if (e.target === categoriesModal) {
+                closeCategoriesModal();
+            }
+        });
+        
+        // ESC tuşu ile modal kapatma
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && categoriesModal.classList.contains('show')) {
+                closeCategoriesModal();
+            }
+        });
 
         // Sayfa dışına tıklanınca dropdown'ı kapat
         document.addEventListener('click', (e) => {
@@ -1712,6 +1926,102 @@
             return 'Diğer';
         }
 
+        // Modal açma fonksiyonu
+        function openCategoriesModal(e) {
+            // Sadece "Tüm Kategoriler" butonuna tıklandığında modal açılsın
+            if (e && e.currentTarget.dataset.category === "all") {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Kategori listesini oluştur
+                renderCategoriesModal();
+                
+                // Modalı göster
+                categoriesModal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Sayfa kaydırmayı engelle
+            }
+        }
+
+        // Modal kapatma fonksiyonu
+        function closeCategoriesModal() {
+            categoriesModal.classList.remove('show');
+            document.body.style.overflow = ''; // Sayfa kaydırmayı geri aç
+        }
+
+        // Modal için kategori listesini oluştur
+        function renderCategoriesModal() {
+            if (!allProducts || allProducts.length === 0) return;
+            
+            // Kategorileri topla ve sayılarını hesapla
+            const categoryCounts = {};
+            allProducts.forEach(product => {
+                const category = product.category || 'Diğer';
+                categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+            });
+            
+            // Tüm kategorileri sırala (sabit sırada)
+            const allCategoryList = [
+                'Automotive & Motorcycle',
+                'Beauty & Health', 
+                'Phones & Telecommunications',
+                'Home Improvement & Lighting',
+                'Jewelry, Watches & Accessories',
+                'Women\'s Clothing',
+                'Electronics',
+                'Men\'s Clothing',
+                'Home & Garden',
+                'Toys & Games',
+                'Luggage, Bags & Shoes',
+                'Furniture',
+                'Computer, Office & Education',
+                'Hair Extensions & Wigs',
+                'Sports & Entertainment',
+                'Baby & Maternity',
+                'Plus Sized Clothing',
+                'Pet Supplies',
+                'Diğer'
+            ];
+            
+            // Modal içeriğini oluştur
+            categoriesModalList.innerHTML = allCategoryList.map(category => {
+                const count = categoryCounts[category] || 0;
+                const isActive = currentCategory === category;
+                
+                return `
+                    <li class="category-modal-item ${isActive ? 'active' : ''}" 
+                        data-category="${category}" 
+                        onclick="selectCategoryFromModal('${category}')">
+                        <span class="category-name">
+                            <i class="fas fa-tag"></i>
+                            ${category}
+                        </span>
+                        <span class="category-count">${count}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // Modal'dan kategori seçme
+        function selectCategoryFromModal(category) {
+            // Kategoriyi seç
+            currentCategory = category;
+            currentPage = 1;
+            
+            // Kategori butonlarını güncelle
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Modal'ı kapat
+            closeCategoriesModal();
+            
+            // Ürünleri filtrele ve göster
+            filterAndDisplayProducts();
+        }
+
         // Excel yükleme
         async function loadExcelFile() {
             try {
@@ -1807,7 +2117,7 @@
 
         // Ürünleri işle
         function processProducts() {
-            // Kategorileri oluştur
+            // Kategorileri oluştur - Tüm Kategoriler butonuna modal özelliği ekleyelim
             const categories = [...new Set(allProducts.map(p => p.category))];
             
             // Kategori butonlarını oluştur
@@ -1827,12 +2137,17 @@
 
             // Kategori butonlarına event listener ekle
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentCategory = btn.dataset.category;
-                    currentPage = 1;
-                    filterAndDisplayProducts();
+                btn.addEventListener('click', function(e) {
+                    // "Tüm Kategoriler" butonu modal açsın, diğerleri normal çalışsın
+                    if (this.dataset.category === 'all') {
+                        openCategoriesModal(e);
+                    } else {
+                        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        currentCategory = this.dataset.category;
+                        currentPage = 1;
+                        filterAndDisplayProducts();
+                    }
                 });
             });
 
@@ -2302,6 +2617,9 @@
         window.shareProduct = shareProduct;
         window.goToPage = goToPage;
         window.toggleTitle = toggleTitle;
+        window.openCategoriesModal = openCategoriesModal;
+        window.closeCategoriesModal = closeCategoriesModal;
+        window.selectCategoryFromModal = selectCategoryFromModal;
 
         // Ürün çevirileri
         const productTranslations = {
