@@ -348,7 +348,7 @@
             background: var(--primary-dark);
         }
 
-        /* Products Grid - ATTIKLARIN KODDAKİ GİBİ */
+        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -452,6 +452,35 @@
             font-size: 0.95rem;
             min-height: 40px;
             line-height: 1.3;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-title.short {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-title.long {
+            display: block;
+        }
+
+        .product-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--card-bg));
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-title.long::after {
+            opacity: 0;
         }
 
         .product-price {
@@ -843,6 +872,11 @@
             .buy-btn, .wishlist-btn, .share-btn {
                 padding: 8px;
                 font-size: 0.7rem;
+            }
+
+            .product-title {
+                font-size: 0.85rem;
+                min-height: 36px;
             }
         }
 
@@ -1343,7 +1377,7 @@
         // Global değişkenler
         let allProducts = [];
         let displayedProducts = 0;
-        const productsPerPage = 50; // Sayfa başına 50 ürün
+        const productsPerPage = 50;
         let currentFilter = 'all';
         let currentCategory = 'all';
         let currentSort = 'default';
@@ -1351,7 +1385,7 @@
         let hasMoreProducts = true;
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         let currentLanguage = localStorage.getItem('language') || 'tr';
-        let currentTheme = localStorage.getItem('theme') || 'dark'; // Varsayılan koyu tema
+        let currentTheme = localStorage.getItem('theme') || 'dark';
         
         // Sayfalama değişkenleri
         let currentPage = 1;
@@ -1496,30 +1530,27 @@
             updateFavoritesCount();
         }
 
-        // Ürün başlığını çevir - Geliştirilmiş versiyon
+        // Ürün başlığını çevir
         function translateProductTitle(title, targetLang) {
-            if (targetLang === 'en') return title; // Zaten İngilizce
+            if (targetLang === 'en') return title;
             
             let translatedTitle = title;
             const titleLower = title.toLowerCase();
             
-            // Önce uzun ifadeleri çevir, sonra tek kelimeleri
             const translationMap = productTranslations[targetLang];
             
-            // Uzun ifadeleri öncelikle çevir (2-3 kelimelik)
             const phrases = Object.keys(translationMap)
                 .filter(key => key.includes(' ') && titleLower.includes(key))
-                .sort((a, b) => b.length - a.length); // Uzun ifadeleri önce çevir
+                .sort((a, b) => b.length - a.length);
             
             for (const phrase of phrases) {
                 const regex = new RegExp(phrase, 'gi');
                 translatedTitle = translatedTitle.replace(regex, translationMap[phrase]);
             }
             
-            // Tek kelimeleri çevir
             const words = Object.keys(translationMap)
                 .filter(key => !key.includes(' '))
-                .sort((a, b) => b.length - a.length); // Uzun kelimeleri önce çevir
+                .sort((a, b) => b.length - a.length);
             
             for (const word of words) {
                 const regex = new RegExp(`\\b${word}\\b`, 'gi');
@@ -1548,12 +1579,10 @@
         function predictCategory(productTitle) {
             const title = productTitle.toLowerCase();
             
-            // Önce mevcut kategoriyi kontrol et
             if (productTitle.category && productTitle.category !== 'Diğer') {
                 return productTitle.category;
             }
             
-            // Anahtar kelimelere göre kategori tahmini
             for (const [category, keywords] of Object.entries(categoryKeywords)) {
                 for (const keyword of keywords) {
                     if (title.includes(keyword.toLowerCase())) {
@@ -1562,7 +1591,6 @@
                 }
             }
             
-            // Eşleşme yoksa varsayılan kategori
             return 'Diğer';
         }
 
@@ -1571,7 +1599,7 @@
             try {
                 console.log("Excel yükleniyor...");
                 
-                // Daha fazla test ürünü oluştur
+                // Test ürünleri oluştur
                 const testProducts = [];
                 const categories = ['Elektronik', 'Moda', 'Ev & Yaşam', 'Kozmetik', 'Spor & Outdoor'];
                 const products = [
@@ -1591,7 +1619,7 @@
                     
                     testProducts.push({
                         id: i.toString(),
-                        title: `${product} ${i} - Special Offer ${2024 + i}`,
+                        title: `${product} ${i} - Special Offer ${2024 + i} with many features and great quality for everyday use`,
                         image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=Product${i}`,
                         originalPrice: `₺${originalPrice}`,
                         discountPrice: `₺${discountPrice}`,
@@ -1687,7 +1715,7 @@
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCategory = btn.dataset.category;
-                    currentPage = 1; // Kategori değişince 1. sayfaya dön
+                    currentPage = 1;
                     filterAndDisplayProducts();
                 });
             });
@@ -1698,7 +1726,7 @@
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentFilter = btn.dataset.filter;
-                    currentPage = 1; // Filtre değişince 1. sayfaya dön
+                    currentPage = 1;
                     
                     if (currentFilter === 'favorites') {
                         favoritesManagement.classList.add('show');
@@ -1769,7 +1797,7 @@
         // Sıralama
         function handleSortChange() {
             currentSort = document.getElementById('sort-select').value;
-            currentPage = 1; // Sıralama değişince 1. sayfaya dön
+            currentPage = 1;
             filterAndDisplayProducts();
         }
 
@@ -1904,7 +1932,7 @@
             }
         }
 
-        // Ürünleri render et - ATTIKLARIN KODDAKİ GİBİ
+        // Ürünleri render et
         function renderProducts(products) {
             if (products.length === 0) {
                 if (currentFilter === 'favorites') {
@@ -1944,7 +1972,7 @@
                         <img src="${product.image}" alt="${displayTitle}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok'">
                     </div>
                     <div class="product-info">
-                        <h3 class="product-title">${displayTitle}</h3>
+                        <h3 class="product-title short" onclick="toggleTitle(this)">${displayTitle}</h3>
                         <div class="product-price">
                             <span class="current-price">${product.discountPrice}</span>
                             <span class="original-price">${product.originalPrice}</span>
@@ -1973,6 +2001,17 @@
             });
         }
 
+        // Ürün başlığını genişlet/daralt
+        function toggleTitle(element) {
+            if (element.classList.contains('short')) {
+                element.classList.remove('short');
+                element.classList.add('long');
+            } else {
+                element.classList.remove('long');
+                element.classList.add('short');
+            }
+        }
+
         // Favori işlemleri
         function toggleFavorite(productId) {
             const index = favorites.indexOf(productId);
@@ -1987,7 +2026,7 @@
             updateFavoritesUI();
             
             if (currentFilter === 'favorites') {
-                currentPage = 1; // Favoriler değişince 1. sayfaya dön
+                currentPage = 1;
                 filterAndDisplayProducts();
             }
         }
@@ -2002,7 +2041,7 @@
                 updateFavoritesUI();
                 
                 if (currentFilter === 'favorites') {
-                    currentPage = 1; // Favoriler değişince 1. sayfaya dön
+                    currentPage = 1;
                     filterAndDisplayProducts();
                 }
             }
@@ -2016,7 +2055,7 @@
                 updateFavoritesUI();
                 
                 if (currentFilter === 'favorites') {
-                    currentPage = 1; // Favoriler değişince 1. sayfaya dön
+                    currentPage = 1;
                     filterAndDisplayProducts();
                 }
             }
@@ -2060,7 +2099,7 @@
         function performSearch() {
             const term = document.getElementById('search-input').value.toLowerCase().trim();
             if (!term) {
-                currentPage = 1; // Arama temizlenince 1. sayfaya dön
+                currentPage = 1;
                 filterAndDisplayProducts();
                 return;
             }
@@ -2076,7 +2115,7 @@
             
             filteredProducts = filtered;
             totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            currentPage = 1; // Yeni aramada 1. sayfaya dön
+            currentPage = 1;
             
             if (totalPages > 1) {
                 pagination.style.display = 'flex';
@@ -2146,6 +2185,7 @@
         window.copyCode = copyCode;
         window.shareProduct = shareProduct;
         window.goToPage = goToPage;
+        window.toggleTitle = toggleTitle;
 
         // Ürün çevirileri
         const productTranslations = {
