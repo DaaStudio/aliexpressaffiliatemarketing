@@ -1254,10 +1254,10 @@
 
         <!-- Main Content -->
         <div id="main-content" style="display: none;">
-            <!-- Categories -->
+            <!-- Categories - Sadece Tüm Kategoriler butonu -->
             <div class="categories" id="categories">
-                <button class="category-btn active" data-category="all">
-                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tümü</span>
+                <button class="category-btn active" data-category="all" id="all-categories-btn">
+                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
                 </button>
             </div>
 
@@ -1367,7 +1367,7 @@
                 loadingDescription: "Ürünler hazırlanıyor...",
                 clearAllFavorites: "Tümünü Temizle",
                 favoritesCount: "{count} favori",
-                allCategories: "Tümü",
+                allCategories: "Tüm Kategoriler",
                 allCategoriesModal: "Tüm Kategoriler",
                 filterAll: "Tümü",
                 filterHighDiscount: "İndirim",
@@ -1419,7 +1419,7 @@
                 loadingDescription: "Products preparing...",
                 clearAllFavorites: "Clear All",
                 favoritesCount: "{count} favorites",
-                allCategories: "All",
+                allCategories: "All Categories",
                 allCategoriesModal: "All Categories",
                 filterAll: "All",
                 filterHighDiscount: "Discount",
@@ -1471,7 +1471,7 @@
                 loadingDescription: "Productos preparándose...",
                 clearAllFavorites: "Limpiar Todo",
                 favoritesCount: "{count} favoritos",
-                allCategories: "Todos",
+                allCategories: "Todas las Categorías",
                 allCategoriesModal: "Todas las Categorías",
                 filterAll: "Todos",
                 filterHighDiscount: "Descuento",
@@ -1523,7 +1523,7 @@
                 loadingDescription: "Produits en préparation...",
                 clearAllFavorites: "Tout Effacer",
                 favoritesCount: "{count} favoris",
-                allCategories: "Tous",
+                allCategories: "Toutes les Catégories",
                 allCategoriesModal: "Toutes les Catégories",
                 filterAll: "Tous",
                 filterHighDiscount: "Réduction",
@@ -1607,6 +1607,7 @@
         const categoriesModal = document.getElementById('categories-modal');
         const categoriesModalList = document.getElementById('categories-modal-list');
         const modalClose = document.getElementById('modal-close');
+        const allCategoriesBtn = document.getElementById('all-categories-btn');
 
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
@@ -1757,6 +1758,7 @@
         nextPageBtn.addEventListener('click', goToNextPage);
         
         // Modal Event Listeners
+        allCategoriesBtn.addEventListener('click', openCategoriesModal);
         modalClose.addEventListener('click', closeCategoriesModal);
         categoriesModal.addEventListener('click', function(e) {
             if (e.target === categoriesModal) {
@@ -1927,19 +1929,13 @@
         }
 
         // Modal açma fonksiyonu
-        function openCategoriesModal(e) {
-            // Sadece "Tüm Kategoriler" butonuna tıklandığında modal açılsın
-            if (e && e.currentTarget.dataset.category === "all") {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Kategori listesini oluştur
-                renderCategoriesModal();
-                
-                // Modalı göster
-                categoriesModal.classList.add('show');
-                document.body.style.overflow = 'hidden'; // Sayfa kaydırmayı engelle
-            }
+        function openCategoriesModal() {
+            // Kategori listesini oluştur
+            renderCategoriesModal();
+            
+            // Modalı göster
+            categoriesModal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Sayfa kaydırmayı engelle
         }
 
         // Modal kapatma fonksiyonu
@@ -1961,6 +1957,7 @@
             
             // Tüm kategorileri sırala (sabit sırada)
             const allCategoryList = [
+                'all',
                 'Automotive & Motorcycle',
                 'Beauty & Health', 
                 'Phones & Telecommunications',
@@ -1984,7 +1981,16 @@
             
             // Modal içeriğini oluştur
             categoriesModalList.innerHTML = allCategoryList.map(category => {
-                const count = categoryCounts[category] || 0;
+                let count, displayName;
+                
+                if (category === 'all') {
+                    count = allProducts.length;
+                    displayName = translations[currentLanguage].allCategories || 'Tüm Kategoriler';
+                } else {
+                    count = categoryCounts[category] || 0;
+                    displayName = category;
+                }
+                
                 const isActive = currentCategory === category;
                 
                 return `
@@ -1992,8 +1998,8 @@
                         data-category="${category}" 
                         onclick="selectCategoryFromModal('${category}')">
                         <span class="category-name">
-                            <i class="fas fa-tag"></i>
-                            ${category}
+                            <i class="fas ${category === 'all' ? 'fa-th-large' : 'fa-tag'}"></i>
+                            ${displayName}
                         </span>
                         <span class="category-count">${count}</span>
                     </li>
@@ -2007,19 +2013,22 @@
             currentCategory = category;
             currentPage = 1;
             
-            // Kategori butonlarını güncelle
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.category === category) {
-                    btn.classList.add('active');
-                }
-            });
+            // Tüm Kategoriler butonunu güncelle
+            allCategoriesBtn.textContent = category === 'all' 
+                ? `${translations[currentLanguage].allCategories} (${allProducts.length})`
+                : `${category} (${getCategoryCount(category)})`;
             
             // Modal'ı kapat
             closeCategoriesModal();
             
             // Ürünleri filtrele ve göster
             filterAndDisplayProducts();
+        }
+
+        // Kategori sayısını al
+        function getCategoryCount(category) {
+            if (category === 'all') return allProducts.length;
+            return allProducts.filter(p => p.category === category).length;
         }
 
         // Excel yükleme
@@ -2117,39 +2126,15 @@
 
         // Ürünleri işle
         function processProducts() {
-            // Kategorileri oluştur - Tüm Kategoriler butonuna modal özelliği ekleyelim
-            const categories = [...new Set(allProducts.map(p => p.category))];
-            
-            // Kategori butonlarını oluştur
+            // Sadece Tüm Kategoriler butonunu göster
             categoriesContainer.innerHTML = `
-                <button class="category-btn active" data-category="all">
+                <button class="category-btn active" data-category="all" id="all-categories-btn">
                     <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
                 </button>
-                ${categories.map(cat => {
-                    const count = allProducts.filter(p => p.category === cat).length;
-                    return `
-                        <button class="category-btn" data-category="${cat}">
-                            <i class="fas fa-tag"></i> ${cat} (${count})
-                        </button>
-                    `;
-                }).join('')}
             `;
 
-            // Kategori butonlarına event listener ekle
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    // "Tüm Kategoriler" butonu modal açsın, diğerleri normal çalışsın
-                    if (this.dataset.category === 'all') {
-                        openCategoriesModal(e);
-                    } else {
-                        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        currentCategory = this.dataset.category;
-                        currentPage = 1;
-                        filterAndDisplayProducts();
-                    }
-                });
-            });
+            // Tüm Kategoriler butonuna event listener ekle
+            document.getElementById('all-categories-btn').addEventListener('click', openCategoriesModal);
 
             // Filter butonlarına event listener ekle
             document.querySelectorAll('.filter-btn').forEach(btn => {
