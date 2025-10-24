@@ -252,7 +252,7 @@
             gap: 6px;
             margin-bottom: 15px;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         .category-btn {
@@ -1261,13 +1261,10 @@
                 </button>
             </div>
 
-            <!-- Filters -->
+            <!-- Filters - Sadeleştirilmiş -->
             <div class="filters">
                 <div class="filter-group">
                     <button class="filter-btn active" data-filter="all" data-translate="filterAll">Tümü</button>
-                    <button class="filter-btn" data-filter="high-discount" data-translate="filterHighDiscount">İndirim</button>
-                    <button class="filter-btn" data-filter="best-seller" data-translate="filterBestSeller">Çok Satan</button>
-                    <button class="filter-btn" data-filter="high-rating" data-translate="filterHighRating">Yüksek Puan</button>
                     <button class="filter-btn" data-filter="favorites" data-translate="filterFavorites">Favoriler</button>
                 </div>
                 <select class="sort-select" id="sort-select">
@@ -1370,9 +1367,6 @@
                 allCategories: "Tüm Kategoriler",
                 allCategoriesModal: "Tüm Kategoriler",
                 filterAll: "Tümü",
-                filterHighDiscount: "İndirim",
-                filterBestSeller: "Çok Satan",
-                filterHighRating: "Yüksek Puan",
                 filterFavorites: "Favoriler",
                 sortDefault: "Sırala",
                 sortPriceLow: "Fiyat ↑",
@@ -1422,9 +1416,6 @@
                 allCategories: "All Categories",
                 allCategoriesModal: "All Categories",
                 filterAll: "All",
-                filterHighDiscount: "Discount",
-                filterBestSeller: "Best Seller",
-                filterHighRating: "High Rate",
                 filterFavorites: "Favorites",
                 sortDefault: "Sort",
                 sortPriceLow: "Price ↑",
@@ -1474,9 +1465,6 @@
                 allCategories: "Todas las Categorías",
                 allCategoriesModal: "Todas las Categorías",
                 filterAll: "Todos",
-                filterHighDiscount: "Descuento",
-                filterBestSeller: "Más Vendidos",
-                filterHighRating: "Alta Puntuación",
                 filterFavorites: "Favoritos",
                 sortDefault: "Ordenar",
                 sortPriceLow: "Precio ↑",
@@ -1526,9 +1514,6 @@
                 allCategories: "Toutes les Catégories",
                 allCategoriesModal: "Toutes les Catégories",
                 filterAll: "Tous",
-                filterHighDiscount: "Réduction",
-                filterBestSeller: "Meilleures Ventes",
-                filterHighRating: "Haute Note",
                 filterFavorites: "Favoris",
                 sortDefault: "Trier",
                 sortPriceLow: "Prix ↑",
@@ -2171,24 +2156,6 @@
             
             // Ana filtreler
             switch(currentFilter) {
-                case 'high-discount':
-                    filteredProducts = filteredProducts.filter(p => {
-                        const discount = parseInt(p.discount) || 0;
-                        return discount >= 40;
-                    });
-                    break;
-                case 'best-seller':
-                    filteredProducts = filteredProducts.filter(p => {
-                        const sales = parseInt(p.sales) || 0;
-                        return sales >= 1000;
-                    });
-                    break;
-                case 'high-rating':
-                    filteredProducts = filteredProducts.filter(p => {
-                        const rating = parseFloat(p.rating) || 0;
-                        return rating >= 90;
-                    });
-                    break;
                 case 'favorites':
                     filteredProducts = filteredProducts.filter(p => favorites.includes(p.id));
                     break;
