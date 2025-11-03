@@ -1255,19 +1255,21 @@
 
         <!-- Main Content -->
         <div id="main-content" style="display: none;">
-            <!-- Categories - Sadece Tüm Kategoriler butonu -->
+            <!-- Categories - Tüm Kategoriler, Tümü ve Favoriler butonları -->
             <div class="categories" id="categories">
                 <button class="category-btn active" data-category="all" id="all-categories-btn">
                     <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
                 </button>
+                <button class="category-btn" data-filter="all" id="all-filter-btn">
+                    <i class="fas fa-border-all"></i> <span data-translate="filterAll">Tümü</span>
+                </button>
+                <button class="category-btn" data-filter="favorites" id="favorites-filter-btn">
+                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span>
+                </button>
             </div>
 
-            <!-- Filters - Sadeleştirilmiş ve sola hizalanmış -->
+            <!-- Filters - Sadece sıralama seçeneği -->
             <div class="filters">
-                <div class="filter-group">
-                    <button class="filter-btn active" data-filter="all" data-translate="filterAll">Tümü</button>
-                    <button class="filter-btn" data-filter="favorites" data-translate="filterFavorites">Favoriler</button>
-                </div>
                 <select class="sort-select" id="sort-select">
                     <option value="default" data-translate="sortDefault">Sırala</option>
                     <option value="price-low" data-translate="sortPriceLow">Fiyat ↑</option>
@@ -2112,32 +2114,39 @@
 
         // Ürünleri işle
         function processProducts() {
-            // Sadece Tüm Kategoriler butonunu göster
+            // Tüm Kategoriler, Tümü ve Favoriler butonlarını göster
             categoriesContainer.innerHTML = `
                 <button class="category-btn active" data-category="all" id="all-categories-btn">
                     <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
+                </button>
+                <button class="category-btn active" data-filter="all" id="all-filter-btn">
+                    <i class="fas fa-border-all"></i> <span data-translate="filterAll">Tümü</span>
+                </button>
+                <button class="category-btn" data-filter="favorites" id="favorites-filter-btn">
+                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span>
                 </button>
             `;
 
             // Tüm Kategoriler butonuna event listener ekle
             document.getElementById('all-categories-btn').addEventListener('click', openCategoriesModal);
 
-            // Filter butonlarına event listener ekle
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
-                    currentPage = 1;
-                    
-                    if (currentFilter === 'favorites') {
-                        favoritesManagement.classList.add('show');
-                    } else {
-                        favoritesManagement.classList.remove('show');
-                    }
-                    
-                    filterAndDisplayProducts();
-                });
+            // Tümü ve Favoriler butonlarına event listener ekle
+            document.getElementById('all-filter-btn').addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = 'all';
+                currentPage = 1;
+                favoritesManagement.classList.remove('show');
+                filterAndDisplayProducts();
+            });
+
+            document.getElementById('favorites-filter-btn').addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = 'favorites';
+                currentPage = 1;
+                favoritesManagement.classList.add('show');
+                filterAndDisplayProducts();
             });
 
             statusInfo.style.display = 'none';
