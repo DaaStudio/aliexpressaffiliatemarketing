@@ -2209,12 +2209,12 @@
             button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
             button.textContent = page;
             
-            // Event delegation kullanarak tıklama olayını ekle
-            button.addEventListener('click', function(e) {
+            // Doğrudan onclick event'i kullan
+            button.onclick = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPage(page);
-            });
+            };
             
             pageNumbers.appendChild(button);
         }
@@ -2461,7 +2461,7 @@
             loadExcelFile();
         });
 
-        // Global fonksiyonlar
+        // Global fonksiyonlar - TÜM FONKSİYONLARI GLOBAL YAP
         window.changeLanguage = changeLanguage;
         window.toggleFavorite = toggleFavorite;
         window.removeFavorite = removeFavorite;
@@ -2474,6 +2474,8 @@
         window.selectCategoryFromModal = selectCategoryFromModal;
         window.showConfirmationModal = showConfirmationModal;
         window.closeConfirmationModal = closeConfirmationModal;
+        window.goToPrevPage = goToPrevPage;
+        window.goToNextPage = goToNextPage;
     </script>
 </body>
 </html>
