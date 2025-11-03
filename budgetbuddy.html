@@ -2222,10 +2222,12 @@
         // Sayfa bilgisini güncelle
         function updatePageInfo() {
             if (translations[currentLanguage]) {
+                const startIndex = (currentPage - 1) * productsPerPage + 1;
+                const endIndex = Math.min(currentPage * productsPerPage, filteredProducts.length);
                 pageInfo.textContent = translations[currentLanguage].pageInfo
                     .replace('{current}', currentPage)
                     .replace('{total}', totalPages)
-                    .replace('{count}', filteredProducts.length);
+                    .replace('{count}', `${startIndex}-${endIndex} / ${filteredProducts.length}`);
             }
         }
 
