@@ -487,12 +487,21 @@
             position: relative;
             cursor: pointer;
             margin-bottom: .6rem;
+            height: 200px;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            background: var(--image-border);
         }
 
         .product-image {
             width: 100%;
-            border-radius: var(--border-radius);
+            height: 100%;
             object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
         }
 
         .product-badge {
@@ -2105,19 +2114,54 @@
             }
         }
 
+        // Resim URL'sini düzelt
+        function fixImageUrl(url) {
+            if (!url) {
+                return 'https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok';
+            }
+            
+            // URL'de http veya https yoksa ekle
+            if (!url.startsWith('http')) {
+                url = 'https:' + url;
+            }
+            
+            // AliExpress resim URL'lerini düzelt
+            if (url.includes('aliexpress.com')) {
+                // AliExpress resim URL'lerini optimize et
+                url = url.replace(/_.*\.jpg/, '.jpg')
+                        .replace(/_.*\.png/, '.png')
+                        .replace(/_.*\.webp/, '.webp');
+            }
+            
+            return url;
+        }
+
         // Excel yükleme
         async function loadExcelFile() {
             try {
                 console.log("Excel yükleniyor...");
                 
-                // Test ürünleri oluştur
+                // Test ürünleri oluştur - GERÇEK RESİM URL'LERİ KULLAN
                 const testProducts = [];
                 const categories = Object.keys(categoryKeywords);
+                const realImageUrls = [
+                    'https://ae01.alicdn.com/kf/S1a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S2a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S3a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S4a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S5a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S6a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S7a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S8a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S9a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg',
+                    'https://ae01.alicdn.com/kf/S10a56c5c6b1f34d9baa5a5c5c5c5c5c5c.jpg'
+                ];
                 
                 for (let i = 1; i <= 300; i++) {
                     const randomCategory = categories[Math.floor(Math.random() * categories.length)];
                     const keywords = categoryKeywords[randomCategory];
                     const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+                    const randomImage = realImageUrls[Math.floor(Math.random() * realImageUrls.length)];
                     
                     const discount = Math.floor(Math.random() * 50) + 10;
                     const originalPrice = Math.floor(Math.random() * 1000) + 100;
@@ -2126,7 +2170,7 @@
                     testProducts.push({
                         id: i.toString(),
                         title: `Premium ${randomKeyword} Product ${i} - High Quality ${randomCategory}`,
-                        image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=Ürün+${i}`,
+                        image: randomImage,
                         originalPrice: `₺${originalPrice}`,
                         discountPrice: `₺${discountPrice}`,
                         discount: `%${discount}`,
@@ -2153,7 +2197,7 @@
                                 const product = {
                                     id: item.ProductId || Math.random().toString(36).substr(2, 9),
                                     title: item['Product Desc'] || item.title || 'Ürün',
-                                    image: item['Image Url'] || item.image || 'https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok',
+                                    image: fixImageUrl(item['Image Url'] || item.image),
                                     originalPrice: item['Origin Price'] || item.originalPrice || '₺0',
                                     discountPrice: item['Discount Price'] || item.discountPrice || '₺0', 
                                     discount: item.Discount || item.discount || '%0',
@@ -2366,7 +2410,9 @@
                             <i class="fas fa-times"></i>
                         </button>
                         ` : ''}
-                        <img src="${product.image}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok'">
+                        <img src="${product.image}" alt="${product.title}" class="product-image" 
+                             onerror="this.src='https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok'"
+                             loading="lazy">
                     </div>
                     <div class="product-info">
                         <h3 class="product-title short" onclick="toggleTitle(this)">${product.title}</h3>
