@@ -763,6 +763,11 @@
             text-align: center;
         }
 
+        .pagination-dots {
+            padding: 0 5px;
+            color: var(--gray);
+        }
+
         /* No Favorites */
         .no-favorites {
             text-align: center;
@@ -1634,13 +1639,10 @@
 
         // Global değişkenler
         let allProducts = [];
-        let displayedProducts = 0;
         const productsPerPage = 50;
         let currentFilter = 'all';
         let currentCategory = 'all';
         let currentSort = 'default';
-        let isLoading = false;
-        let hasMoreProducts = true;
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         let currentLanguage = localStorage.getItem('language') || 'tr';
         let currentTheme = localStorage.getItem('theme') || 'dark';
@@ -1654,7 +1656,6 @@
         const productsGrid = document.getElementById('products');
         const statusInfo = document.getElementById('status-info');
         const mainContent = document.getElementById('main-content');
-        const loadingIndicator = document.getElementById('loading-indicator');
         const categoriesContainer = document.getElementById('categories');
         const favoritesManagement = document.getElementById('favorites-management');
         const noFavorites = document.getElementById('no-favorites');
@@ -1685,134 +1686,24 @@
 
         // AliExpress Kategorileri ve Anahtar Kelimeleri
         const categoryKeywords = {
-            'Automotive & Motorcycle': [
-                'car', 'auto', 'automotive', 'motorcycle', 'bike', 'vehicle', 'tire', 'wheel', 'engine', 
-                'brake', 'exhaust', 'headlight', 'taillight', 'mirror', 'seat', 'helmet', 'gloves', 
-                'jacket', 'oil', 'filter', 'battery', 'charger', 'tool', 'accessory', 'parts', 'gps',
-                'dash cam', 'car camera', 'car audio', 'speaker', 'subwoofer', 'amplifier', 'alarm',
-                'lock', 'cover', 'mat', 'cleaner', 'polish', 'wax', 'detailing', 'maintenance'
-            ],
-            'Beauty & Health': [
-                'makeup', 'cosmetic', 'skincare', 'beauty', 'health', 'facial', 'cream', 'lotion', 
-                'serum', 'moisturizer', 'cleanser', 'toner', 'mask', 'makeup brush', 'palette', 
-                'lipstick', 'mascara', 'eyeshadow', 'foundation', 'concealer', 'blush', 'highlighter',
-                'perfume', 'fragrance', 'deodorant', 'shampoo', 'conditioner', 'hair care', 'styling',
-                'hair dryer', 'straightener', 'curler', 'trimmer', 'shaver', 'epilator', 'massager',
-                'scale', 'thermometer', 'blood pressure', 'fitness', 'vitamin', 'supplement'
-            ],
-            'Phones & Telecommunications': [
-                'smartphone', 'phone', 'mobile', 'iphone', 'samsung', 'huawei', 'xiaomi', 'oppo', 
-                'vivo', 'oneplus', 'android', 'ios', '5g', '4g', 'case', 'cover', 'screen protector',
-                'charger', 'cable', 'adapter', 'power bank', 'headphone', 'earphone', 'earbud', 
-                'bluetooth', 'wireless', 'smartwatch', 'watch', 'tablet', 'ipad', 'accessory',
-                'sim card', 'router', 'modem', 'antenna', 'repeater', 'telecommunication'
-            ],
-            'Home Improvement & Lighting': [
-                'home improvement', 'lighting', 'lamp', 'light', 'led', 'bulb', 'fixture', 'ceiling',
-                'wall', 'floor', 'desk', 'outdoor', 'garden', 'solar', 'motion', 'sensor', 'switch',
-                'outlet', 'extension', 'cord', 'tool', 'drill', 'saw', 'hammer', 'screwdriver',
-                'wrench', 'pliers', 'tape', 'measure', 'level', 'paint', 'brush', 'roller', 'toolbox',
-                'ladder', 'safety', 'workwear', 'storage', 'shelf', 'rack', 'organization'
-            ],
-            'Jewelry, Watches & Accessories': [
-                'jewelry', 'watch', 'accessory', 'necklace', 'bracelet', 'ring', 'earring', 'pendant',
-                'chain', 'bangle', 'anklet', 'brooch', 'cufflink', 'tie clip', 'money clip', 'keychain',
-                'sunglasses', 'glasses', 'case', 'luxury', 'fashion', 'diamond', 'gold', 'silver',
-                'platinum', 'pearl', 'crystal', 'gemstone', 'birthstone', 'engraving', 'personalized',
-                'smart watch', 'fitness tracker', 'activity band', 'watch band', 'strap'
-            ],
-            'Women\'s Clothing': [
-                'women', 'clothing', 'dress', 'skirt', 'blouse', 'shirt', 'top', 't-shirt', 'sweater',
-                'cardigan', 'jacket', 'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings',
-                'shorts', 'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
-                'bikini', 'swimsuit', 'cover up', 'activewear', 'yoga', 'fitness', 'workout', 'socks',
-                'tights', 'stockings', 'maternity', 'plus size', 'petite', 'fashion', 'trendy'
-            ],
-            'Electronics': [
-                'electronics', 'electronic', 'gadget', 'device', 'tech', 'technology', 'smart', 'home',
-                'audio', 'video', 'tv', 'television', 'monitor', 'display', 'projector', 'speaker',
-                'soundbar', 'headphone', 'earphone', 'microphone', 'camera', 'lens', 'drone', 'action',
-                'gopro', 'tripod', 'gimbal', 'stabilizer', 'computer', 'laptop', 'tablet', 'printer',
-                'scanner', 'keyboard', 'mouse', 'webcam', 'router', 'nas', 'storage', 'hard drive'
-            ],
-            'Men\'s Clothing': [
-                'men', 'clothing', 'shirt', 't-shirt', 'polo', 'button down', 'dress shirt', 'casual',
-                'sweater', 'hoodie', 'sweatshirt', 'jacket', 'coat', 'blazer', 'suit', 'pants', 'jeans',
-                'chinos', 'shorts', 'swimwear', 'trunks', 'underwear', 'boxers', 'briefs', 'socks',
-                'tie', 'belt', 'wallet', 'accessory', 'workwear', 'uniform', 'activewear', 'fitness',
-                'outdoor', 'hiking', 'fishing', 'hunting', 'formal', 'business', 'casual', 'streetwear'
-            ],
-            'Home & Garden': [
-                'home', 'garden', 'furniture', 'decor', 'decoration', 'accessory', 'kitchen', 'bath',
-                'bedroom', 'living', 'dining', 'outdoor', 'patio', 'lawn', 'plant', 'flower', 'pot',
-                'vase', 'candle', 'diffuser', 'wall art', 'picture', 'frame', 'clock', 'mirror',
-                'rug', 'carpet', 'mat', 'curtain', 'blind', 'shade', 'pillow', 'cushion', 'blanket',
-                'throw', 'bedding', 'sheet', 'duvet', 'comforter', 'quilt', 'towel', 'bath mat'
-            ],
-            'Toys & Games': [
-                'toy', 'game', 'kids', 'children', 'baby', 'educational', 'learning', 'development',
-                'puzzle', 'building', 'block', 'lego', 'brick', 'doll', 'action figure', 'vehicle',
-                'car', 'truck', 'plane', 'train', 'robot', 'rc', 'remote control', 'drone', 'helicopter',
-                'board game', 'card game', 'puzzle game', 'video game', 'console', 'controller',
-                'vr', 'virtual reality', 'outdoor', 'playground', 'swing', 'slide', 'trampoline'
-            ],
-            'Luggage, Bags & Shoes': [
-                'luggage', 'bag', 'shoe', 'travel', 'suitcase', 'backpack', 'handbag', 'purse',
-                'wallet', 'briefcase', 'messenger', 'tote', 'duffel', 'garment', 'cosmetic', 'laptop',
-                'sneaker', 'athletic', 'running', 'walking', 'hiking', 'boot', 'dress', 'casual',
-                'sandals', 'flip flop', 'slipper', 'heel', 'pump', 'flat', 'loafer', 'oxford',
-                'accessory', 'organizer', 'packing', 'travel gear', 'luggage tag', 'lock'
-            ],
-            'Furniture': [
-                'furniture', 'furnishing', 'table', 'desk', 'chair', 'sofa', 'couch', 'loveseat',
-                'sectional', 'recliner', 'ottoman', 'bench', 'stool', 'bed', 'mattress', 'headboard',
-                'dresser', 'chest', 'wardrobe', 'armoire', 'cabinet', 'shelf', 'bookcase', 'entertainment',
-                'tv stand', 'console', 'coffee', 'end', 'nightstand', 'dining', 'kitchen', 'bar',
-                'counter', 'island', 'patio', 'garden', 'outdoor', 'office', 'ergonomic', 'gaming'
-            ],
-            'Computer, Office & Education': [
-                'computer', 'office', 'education', 'laptop', 'desktop', 'monitor', 'keyboard', 'mouse',
-                'printer', 'scanner', 'copier', 'fax', 'projector', 'screen', 'whiteboard', 'desk',
-                'chair', 'filing', 'cabinet', 'shelf', 'organizer', 'supply', 'pen', 'pencil', 'marker',
-                'highlighter', 'notebook', 'binder', 'folder', 'calculator', 'ruler', 'stapler',
-                'staple', 'tape', 'glue', 'scissors', 'educational', 'learning', 'teaching', 'science'
-            ],
-            'Hair Extensions & Wigs': [
-                'hair', 'extension', 'wig', 'toupee', 'weave', 'clip-in', 'tape-in', 'fusion',
-                'micro', 'strand', 'bundle', 'closure', 'frontal', 'lace', 'synthetic', 'human',
-                'remy', 'virgin', 'straight', 'wavy', 'curly', 'kinky', 'color', 'dye', 'highlight',
-                'ombre', 'balayage', 'styling', 'care', 'shampoo', 'conditioner', 'treatment',
-                'brush', 'comb', 'dryer', 'iron', 'curler', 'accessory', 'cap', 'stand'
-            ],
-            'Sports & Entertainment': [
-                'sports', 'entertainment', 'fitness', 'exercise', 'workout', 'gym', 'yoga', 'pilates',
-                'running', 'walking', 'hiking', 'camping', 'fishing', 'hunting', 'cycling', 'biking',
-                'swimming', 'diving', 'surfing', 'skiing', 'snowboarding', 'skateboarding', 'roller',
-                'team', 'soccer', 'basketball', 'football', 'baseball', 'tennis', 'golf', 'badminton',
-                'music', 'instrument', 'guitar', 'piano', 'keyboard', 'drum', 'violin', 'microphone',
-                'karaoke', 'dj', 'lighting', 'effect', 'party', 'event', 'game', 'console'
-            ],
-            'Baby & Maternity': [
-                'baby', 'maternity', 'infant', 'toddler', 'child', 'newborn', 'pregnancy', 'mother',
-                'nursery', 'crib', 'bassinet', 'bed', 'mattress', 'changing', 'table', 'dresser',
-                'storage', 'organizer', 'stroller', 'pram', 'carrier', 'sling', 'car seat', 'high chair',
-                'booster', 'bath', 'tub', 'toy', 'educational', 'development', 'clothing', 'onesie',
-                'romper', 'sleepwear', 'blanket', 'swaddle', 'feeding', 'bottle', 'pacifier', 'health'
-            ],
-            'Plus Sized Clothing': [
-                'plus size', 'plus sized', 'curvy', 'big', 'tall', 'women', 'men', 'clothing',
-                'dress', 'top', 'blouse', 'shirt', 't-shirt', 'sweater', 'cardigan', 'jacket',
-                'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings', 'shorts', 'skirt',
-                'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
-                'activewear', 'fitness', 'workout', 'fashion', 'trendy', 'stylish', 'comfort'
-            ],
-            'Pet Supplies': [
-                'pet', 'supply', 'dog', 'cat', 'puppy', 'kitten', 'food', 'treat', 'snack', 'bowl',
-                'feeder', 'waterer', 'fountain', 'bed', 'mat', 'crate', 'cage', 'carrier', 'house',
-                'shelter', 'toy', 'chew', 'bone', 'ball', 'frisbee', 'leash', 'collar', 'harness',
-                'clothing', 'costume', 'grooming', 'brush', 'comb', 'shampoo', 'conditioner', 'health',
-                'vitamin', 'supplement', 'medicine', 'first aid', 'cleaning', 'litter', 'box', 'training'
-            ]
+            'Automotive & Motorcycle': ['car', 'auto', 'automotive', 'motorcycle', 'bike', 'vehicle'],
+            'Beauty & Health': ['makeup', 'cosmetic', 'skincare', 'beauty', 'health', 'facial'],
+            'Phones & Telecommunications': ['smartphone', 'phone', 'mobile', 'iphone', 'samsung', 'huawei'],
+            'Home Improvement & Lighting': ['home improvement', 'lighting', 'lamp', 'light', 'led', 'bulb'],
+            'Jewelry, Watches & Accessories': ['jewelry', 'watch', 'accessory', 'necklace', 'bracelet', 'ring'],
+            'Women\'s Clothing': ['women', 'clothing', 'dress', 'skirt', 'blouse', 'shirt'],
+            'Electronics': ['electronics', 'electronic', 'gadget', 'device', 'tech', 'technology'],
+            'Men\'s Clothing': ['men', 'clothing', 'shirt', 't-shirt', 'polo', 'button down'],
+            'Home & Garden': ['home', 'garden', 'furniture', 'decor', 'decoration', 'accessory'],
+            'Toys & Games': ['toy', 'game', 'kids', 'children', 'baby', 'educational'],
+            'Luggage, Bags & Shoes': ['luggage', 'bag', 'shoe', 'travel', 'suitcase', 'backpack'],
+            'Furniture': ['furniture', 'furnishing', 'table', 'desk', 'chair', 'sofa'],
+            'Computer, Office & Education': ['computer', 'office', 'education', 'laptop', 'desktop', 'monitor'],
+            'Hair Extensions & Wigs': ['hair', 'extension', 'wig', 'toupee', 'weave', 'clip-in'],
+            'Sports & Entertainment': ['sports', 'entertainment', 'fitness', 'exercise', 'workout', 'gym'],
+            'Baby & Maternity': ['baby', 'maternity', 'infant', 'toddler', 'child', 'newborn'],
+            'Plus Sized Clothing': ['plus size', 'plus sized', 'curvy', 'big', 'tall', 'women'],
+            'Pet Supplies': ['pet', 'supply', 'dog', 'cat', 'puppy', 'kitten']
         };
 
         // Event Listeners
@@ -1825,8 +1716,6 @@
         document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
         document.getElementById('language-btn').addEventListener('click', toggleLanguageDropdown);
         document.getElementById('clear-all-favorites').addEventListener('click', showConfirmationModal);
-        prevPageBtn.addEventListener('click', goToPrevPage);
-        nextPageBtn.addEventListener('click', goToNextPage);
         
         // Modal Event Listeners
         allCategoriesBtn.addEventListener('click', openCategoriesModal);
@@ -1929,11 +1818,6 @@
                     // Özel durumlar için değişkenleri değiştir
                     if (key === 'favoritesCount') {
                         translatedText = translatedText.replace('{count}', favorites.length);
-                    } else if (key === 'pageInfo' && filteredProducts.length > 0) {
-                        translatedText = translatedText
-                            .replace('{current}', currentPage)
-                            .replace('{total}', totalPages)
-                            .replace('{count}', filteredProducts.length);
                     }
                     
                     if (element.tagName === 'INPUT') {
@@ -1946,42 +1830,6 @@
                 }
             });
             updateFavoritesCount();
-        }
-
-        // Ürün başlığını çevir
-        function translateProductTitle(title, targetLang) {
-            if (targetLang === 'en') return title;
-            
-            let translatedTitle = title;
-            
-            // Basit çeviri örnekleri - gerçek uygulamada daha kapsamlı bir çeviri sistemi kullanılmalı
-            const translationMap = {
-                'car': {
-                    'tr': 'araba'
-                },
-                'phone': {
-                    'tr': 'telefon'
-                },
-                'shirt': {
-                    'tr': 'gömlek'
-                },
-                'watch': {
-                    'tr': 'saat'
-                },
-                'shoes': {
-                    'tr': 'ayakkabı'
-                }
-            };
-            
-            // Basit kelime çevirisi
-            for (const [word, translations] of Object.entries(translationMap)) {
-                if (translations[targetLang] && title.toLowerCase().includes(word)) {
-                    const regex = new RegExp(word, 'gi');
-                    translatedTitle = translatedTitle.replace(regex, translations[targetLang]);
-                }
-            }
-            
-            return translatedTitle;
         }
 
         // Toast bildirimi
@@ -2018,10 +1866,6 @@
         function predictCategory(productTitle) {
             const title = productTitle.toLowerCase();
             
-            if (productTitle.category && productTitle.category !== 'Diğer') {
-                return productTitle.category;
-            }
-            
             for (const [category, keywords] of Object.entries(categoryKeywords)) {
                 for (const keyword of keywords) {
                     if (title.includes(keyword.toLowerCase())) {
@@ -2040,13 +1884,13 @@
             
             // Modalı göster
             categoriesModal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Sayfa kaydırmayı engelle
+            document.body.style.overflow = 'hidden';
         }
 
         // Modal kapatma fonksiyonu
         function closeCategoriesModal() {
             categoriesModal.classList.remove('show');
-            document.body.style.overflow = ''; // Sayfa kaydırmayı geri aç
+            document.body.style.overflow = '';
         }
 
         // Modal için kategori listesini oluştur
@@ -2060,7 +1904,7 @@
                 categoryCounts[category] = (categoryCounts[category] || 0) + 1;
             });
             
-            // Tüm kategorileri sırala (sabit sırada)
+            // Tüm kategorileri sırala
             const allCategoryList = [
                 'all',
                 'Automotive & Motorcycle',
@@ -2114,7 +1958,6 @@
 
         // Modal'dan kategori seçme
         function selectCategoryFromModal(category) {
-            // Kategoriyi seç
             currentCategory = category;
             currentPage = 1;
             
@@ -2160,22 +2003,16 @@
             }
         }
 
-        // Kategori sayısını al
-        function getCategoryCount(category) {
-            if (category === 'all') return allProducts.length;
-            return allProducts.filter(p => p.category === category).length;
-        }
-
         // Excel yükleme
         async function loadExcelFile() {
             try {
                 console.log("Excel yükleniyor...");
                 
-                // Test ürünleri oluştur - Her kategori için örnek ürünler
+                // Test ürünleri oluştur
                 const testProducts = [];
                 const categories = Object.keys(categoryKeywords);
                 
-                // Her kategori için 8-10 örnek ürün oluştur
+                // Her kategori için örnek ürün oluştur
                 categories.forEach((category, categoryIndex) => {
                     const categoryKeywordsList = categoryKeywords[category];
                     
@@ -2188,7 +2025,7 @@
                         
                         testProducts.push({
                             id: productIndex.toString(),
-                            title: `${randomKeyword} ${productIndex} - Premium Quality ${category} Product with Special Features`,
+                            title: `${randomKeyword} ${productIndex} - Premium Quality ${category} Product`,
                             image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=${category.replace(/\s+/g, '+')}`,
                             originalPrice: `₺${originalPrice}`,
                             discountPrice: `₺${discountPrice}`,
@@ -2322,6 +2159,7 @@
             // Sayfalama kontrollerini göster/gizle
             if (totalPages > 1) {
                 pagination.style.display = 'flex';
+                setupPagination();
             } else {
                 pagination.style.display = 'none';
             }
@@ -2364,7 +2202,16 @@
             return match ? parseInt(match[0]) : 0;
         }
 
-        // Sayfalama fonksiyonları - DÜZELTİLMİŞ VERSİYON
+        // Sayfalama fonksiyonları - TAMAMEN YENİ
+        function setupPagination() {
+            // Önceki ve sonraki butonlarına event listener ekle
+            prevPageBtn.onclick = goToPrevPage;
+            nextPageBtn.onclick = goToNextPage;
+            
+            // Sayfa numaralarını oluştur
+            updatePaginationControls();
+        }
+
         function goToPrevPage() {
             if (currentPage > 1) {
                 currentPage--;
@@ -2386,7 +2233,6 @@
             }
         }
 
-        // Sayfalama kontrollerini güncelle - DÜZELTİLMİŞ VERSİYON
         function updatePaginationControls() {
             // Önceki/Sonraki butonlarını güncelle
             prevPageBtn.disabled = currentPage === 1;
@@ -2412,7 +2258,7 @@
             
             // İlk sayfa her zaman gösterilsin
             if (startPage > 1) {
-                addPageButton(1);
+                createPageButton(1);
                 if (startPage > 2) {
                     pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
                 }
@@ -2420,7 +2266,7 @@
             
             // Sayfa numaralarını ekle
             for (let i = startPage; i <= endPage; i++) {
-                addPageButton(i);
+                createPageButton(i);
             }
             
             // Son sayfa her zaman gösterilsin
@@ -2428,27 +2274,24 @@
                 if (endPage < totalPages - 1) {
                     pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
                 }
-                addPageButton(totalPages);
+                createPageButton(totalPages);
             }
         }
 
-        function addPageButton(page) {
+        function createPageButton(page) {
             const button = document.createElement('button');
             button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
             button.textContent = page;
-            button.addEventListener('click', function(e) {
+            button.onclick = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPage(page);
-            });
+            };
             pageNumbers.appendChild(button);
         }
 
         // Sayfa bilgisini güncelle
         function updatePageInfo() {
-            const startIndex = (currentPage - 1) * productsPerPage + 1;
-            const endIndex = Math.min(currentPage * productsPerPage, filteredProducts.length);
-            
             if (translations[currentLanguage]) {
                 pageInfo.textContent = translations[currentLanguage].pageInfo
                     .replace('{current}', currentPage)
@@ -2492,11 +2335,6 @@
             products.forEach(product => {
                 const isFavorite = favorites.includes(product.id);
                 
-                // Ürün başlığını çevir
-                const displayTitle = currentLanguage === 'en' 
-                    ? product.title 
-                    : translateProductTitle(product.originalTitle || product.title, currentLanguage);
-                
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
@@ -2508,10 +2346,10 @@
                             <i class="fas fa-times"></i>
                         </button>
                         ` : ''}
-                        <img src="${product.image}" alt="${displayTitle}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok'">
+                        <img src="${product.image}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200/666/FFFFFF?text=Resim+Yok'">
                     </div>
                     <div class="product-info">
-                        <h3 class="product-title short" onclick="toggleTitle(this)">${displayTitle}</h3>
+                        <h3 class="product-title short" onclick="toggleTitle(this)">${product.title}</h3>
                         <div class="product-price">
                             <span class="current-price">${product.discountPrice}</span>
                             <span class="original-price">${product.originalPrice}</span>
@@ -2612,28 +2450,6 @@
             if (favoritesBadge) {
                 favoritesBadge.textContent = favorites.length;
             }
-            
-            const favoriteButtons = document.querySelectorAll('.wishlist-btn');
-            favoriteButtons.forEach(btn => {
-                const productCard = btn.closest('.product-card');
-                if (productCard) {
-                    const productId = getProductIdFromCard(productCard);
-                    if (favorites.includes(productId)) {
-                        btn.classList.add('active');
-                        btn.innerHTML = '<i class="fas fa-heart"></i>';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.innerHTML = '<i class="far fa-heart"></i>';
-                    }
-                }
-            });
-        }
-
-        function getProductIdFromCard(card) {
-            const wishlistBtn = card.querySelector('.wishlist-btn');
-            const onclickAttr = wishlistBtn.getAttribute('onclick');
-            const match = onclickAttr.match(/toggleFavorite\('([^']+)'\)/);
-            return match ? match[1] : null;
         }
 
         function updateFavoritesCount() {
@@ -2655,11 +2471,7 @@
             }
             
             const filtered = allProducts.filter(p => {
-                const displayTitle = currentLanguage === 'en' 
-                    ? p.title 
-                    : translateProductTitle(p.originalTitle || p.title, currentLanguage);
-                
-                return displayTitle.toLowerCase().includes(term) || 
+                return p.title.toLowerCase().includes(term) || 
                        (p.category && p.category.toLowerCase().includes(term));
             });
             
@@ -2669,6 +2481,7 @@
             
             if (totalPages > 1) {
                 pagination.style.display = 'flex';
+                setupPagination();
             } else {
                 pagination.style.display = 'none';
             }
@@ -2691,19 +2504,14 @@
             const shareUrl = product.link;
             const discountCode = product.code ? `\n${translations[currentLanguage].discountCode} ${product.code}` : '';
             
-            // Çevrilmiş başlık
-            const displayTitle = currentLanguage === 'en' 
-                ? product.title 
-                : translateProductTitle(product.originalTitle || product.title, currentLanguage);
-            
             if (navigator.share) {
                 navigator.share({
-                    title: displayTitle,
+                    title: product.title,
                     text: `${shareText}${discountCode}`,
                     url: shareUrl
                 });
             } else {
-                navigator.clipboard.writeText(`${displayTitle} - ${shareUrl}${discountCode}`);
+                navigator.clipboard.writeText(`${product.title} - ${shareUrl}${discountCode}`);
                 showToast(currentLanguage === 'tr' ? 'Ürün bilgileri kopyalandı!' : 'Product information copied!');
             }
         }
