@@ -709,83 +709,6 @@
             color: white;
         }
 
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .pagination-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--gray);
-            color: var(--text-color);
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            min-width: 32px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .pagination-btn:hover {
-            background: var(--secondary);
-            color: white;
-            border-color: var(--secondary);
-        }
-
-        .pagination-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .pagination-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination-btn.disabled:hover {
-            background: var(--card-bg);
-            color: var(--text-color);
-            border-color: var(--gray);
-        }
-
-        .pagination-info {
-            color: var(--gray);
-            font-size: 0.8rem;
-            margin: 0 10px;
-            text-align: center;
-        }
-
-        /* No Favorites */
-        .no-favorites {
-            text-align: center;
-            padding: 40px 15px;
-            color: var(--gray);
-            display: none;
-        }
-
-        .no-favorites i {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            color: var(--gray);
-        }
-
-        .no-favorites h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .no-favorites p {
-            font-size: 0.9rem;
-        }
-
         /* Loading */
         .loading {
             text-align: center;
@@ -810,6 +733,54 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* End of Results */
+        .end-of-results {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--gray);
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        .end-of-results i {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: var(--gray);
+        }
+
+        .end-of-results h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .end-of-results p {
+            font-size: 0.9rem;
+        }
+
+        /* No Favorites */
+        .no-favorites {
+            text-align: center;
+            padding: 40px 15px;
+            color: var(--gray);
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        .no-favorites i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: var(--gray);
+        }
+
+        .no-favorites h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .no-favorites p {
+            font-size: 0.9rem;
         }
 
         /* Footer */
@@ -1063,21 +1034,6 @@
                 right: auto;
                 left: 0;
             }
-
-            .pagination {
-                gap: 4px;
-            }
-            
-            .pagination-btn {
-                padding: 5px 8px;
-                min-width: 30px;
-                font-size: 0.75rem;
-            }
-            
-            .pagination-info {
-                font-size: 0.75rem;
-                margin: 0 8px;
-            }
             
             /* Mobil için özel düzenlemeler */
             .categories {
@@ -1216,16 +1172,6 @@
             }
             
             .original-price {
-                font-size: 0.7rem;
-            }
-
-            .pagination {
-                gap: 3px;
-            }
-            
-            .pagination-btn {
-                padding: 4px 6px;
-                min-width: 28px;
                 font-size: 0.7rem;
             }
             
@@ -1431,12 +1377,17 @@
             <!-- Products Grid -->
             <div id="products" class="products-grid"></div>
 
-            <!-- Pagination -->
-            <div class="pagination" id="pagination" style="display: none;">
-                <button class="pagination-btn" id="prev-page" data-translate="prevPage">←</button>
-                <div id="page-numbers" class="page-numbers"></div>
-                <button class="pagination-btn" id="next-page" data-translate="nextPage">→</button>
-                <div class="pagination-info" id="page-info"></div>
+            <!-- Loading Indicator -->
+            <div class="loading" id="loading-indicator">
+                <div class="loading-spinner"></div>
+                <p data-translate="loadingMore">Daha fazla ürün yükleniyor...</p>
+            </div>
+
+            <!-- End of Results -->
+            <div class="end-of-results" id="end-of-results">
+                <i class="fas fa-flag-checkered"></i>
+                <h3 data-translate="endOfResultsTitle">Tüm ürünleri görüntülediniz!</h3>
+                <p data-translate="endOfResultsDescription">Listelenen tüm ürünleri görüntülediniz. Daha fazla sonuç için farklı bir kategori veya filtre deneyebilirsiniz.</p>
             </div>
 
             <!-- No Favorites Message -->
@@ -1444,12 +1395,6 @@
                 <i class="far fa-heart"></i>
                 <h3 data-translate="noFavoritesTitle">Henüz favori ürününüz yok</h3>
                 <p data-translate="noFavoritesDescription">Beğendiğiniz ürünlerin yanındaki kalp ikonuna tıklayarak favorilere ekleyebilirsiniz.</p>
-            </div>
-
-            <!-- Loading Indicator -->
-            <div class="loading" id="loading-indicator">
-                <div class="loading-spinner"></div>
-                <p data-translate="loadingMore">Daha fazla ürün yükleniyor...</p>
             </div>
         </div>
     </div>
@@ -1546,7 +1491,9 @@
                 sortRating: "Puan",
                 noFavoritesTitle: "Favori yok",
                 noFavoritesDescription: "Ürünleri favorilere ekleyin.",
-                loadingMore: "Yükleniyor...",
+                loadingMore: "Daha fazla ürün yükleniyor...",
+                endOfResultsTitle: "Tüm ürünleri görüntülediniz!",
+                endOfResultsDescription: "Listelenen tüm ürünleri görüntülediniz. Daha fazla sonuç için farklı bir kategori veya filtre deneyebilirsiniz.",
                 footerAbout: "AliExpress",
                 footerDescription: "En iyi ürünler uygun fiyatlarla.",
                 footerLinks: "Bağlantılar",
@@ -1570,10 +1517,6 @@
                 noProductsFound: "Ürün bulunamadı.",
                 discountCode: "Kod:",
                 buyNow: "Satın Al",
-                prevPage: "←",
-                nextPage: "→",
-                pageInfo: "S. {current}/{total} - {count} ürün",
-                loadingPage: "Yükleniyor...",
                 confirmationTitle: "Emin misiniz?",
                 confirmationMessage: "Tüm favori ürünlerinizi temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
                 cancelButton: "Hayır",
@@ -1599,7 +1542,9 @@
                 sortRating: "Rating",
                 noFavoritesTitle: "No Favorites",
                 noFavoritesDescription: "Add products to favorites.",
-                loadingMore: "Loading...",
+                loadingMore: "Loading more products...",
+                endOfResultsTitle: "You've viewed all products!",
+                endOfResultsDescription: "You've viewed all listed products. Try a different category or filter for more results.",
                 footerAbout: "AliExpress",
                 footerDescription: "Best products at affordable prices.",
                 footerLinks: "Links",
@@ -1623,10 +1568,6 @@
                 noProductsFound: "No products found.",
                 discountCode: "Code:",
                 buyNow: "Buy Now",
-                prevPage: "←",
-                nextPage: "→",
-                pageInfo: "P. {current}/{total} - {count} products",
-                loadingPage: "Loading...",
                 confirmationTitle: "Are you sure?",
                 confirmationMessage: "Are you sure you want to clear all your favorite products? This action cannot be undone.",
                 cancelButton: "No",
@@ -1652,7 +1593,9 @@
                 sortRating: "Puntuación",
                 noFavoritesTitle: "Sin Favoritos",
                 noFavoritesDescription: "Agrega productos a favoritos.",
-                loadingMore: "Cargando...",
+                loadingMore: "Cargando más productos...",
+                endOfResultsTitle: "¡Has visto todos los productos!",
+                endOfResultsDescription: "Has visto todos los productos listados. Prueba una categoría o filtro diferente para más resultados.",
                 footerAbout: "AliExpress",
                 footerDescription: "Mejores productos a precios asequibles.",
                 footerLinks: "Enlaces",
@@ -1676,10 +1619,6 @@
                 noProductsFound: "No se encontraron productos.",
                 discountCode: "Código:",
                 buyNow: "Comprar",
-                prevPage: "←",
-                nextPage: "→",
-                pageInfo: "P. {current}/{total} - {count} productos",
-                loadingPage: "Cargando...",
                 confirmationTitle: "¿Estás seguro?",
                 confirmationMessage: "¿Estás seguro de que quieres eliminar todos tus productos favoritos? Esta acción no se puede deshacer.",
                 cancelButton: "No",
@@ -1705,7 +1644,9 @@
                 sortRating: "Note",
                 noFavoritesTitle: "Aucun Favori",
                 noFavoritesDescription: "Ajoutez des produits aux favoris.",
-                loadingMore: "Chargement...",
+                loadingMore: "Chargement de plus de produits...",
+                endOfResultsTitle: "Vous avez vu tous les produits !",
+                endOfResultsDescription: "Vous avez vu tous les produits listés. Essayez une catégorie ou un filtre différent pour plus de résultats.",
                 footerAbout: "AliExpress",
                 footerDescription: "Meilleurs produits à prix abordables.",
                 footerLinks: "Liens",
@@ -1729,10 +1670,6 @@
                 noProductsFound: "Aucun produit trouvé.",
                 discountCode: "Code :",
                 buyNow: "Acheter",
-                prevPage: "←",
-                nextPage: "→",
-                pageInfo: "P. {current}/{total} - {count} produits",
-                loadingPage: "Chargement...",
                 confirmationTitle: "Êtes-vous sûr ?",
                 confirmationMessage: "Êtes-vous sûr de vouloir supprimer tous vos produits favoris ? Cette action ne peut pas être annulée.",
                 cancelButton: "Non",
@@ -1753,10 +1690,9 @@
         let currentLanguage = localStorage.getItem('language') || 'tr';
         let currentTheme = localStorage.getItem('theme') || 'dark';
         
-        // Sayfalama değişkenleri
-        let currentPage = 1;
-        let totalPages = 1;
+        // Sonsuz scroll değişkenleri
         let filteredProducts = [];
+        let currentDisplayedCount = 0;
 
         // DOM Elements
         const productsGrid = document.getElementById('products');
@@ -1766,13 +1702,9 @@
         const categoriesContainer = document.getElementById('categories');
         const favoritesManagement = document.getElementById('favorites-management');
         const noFavorites = document.getElementById('no-favorites');
+        const endOfResults = document.getElementById('end-of-results');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        const pagination = document.getElementById('pagination');
-        const prevPageBtn = document.getElementById('prev-page');
-        const nextPageBtn = document.getElementById('next-page');
-        const pageNumbers = document.getElementById('page-numbers');
-        const pageInfo = document.getElementById('page-info');
         const copyMsg = document.getElementById('copyMsg');
         
         // Modal Elements
@@ -1933,8 +1865,9 @@
         document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
         document.getElementById('language-btn').addEventListener('click', toggleLanguageDropdown);
         document.getElementById('clear-all-favorites').addEventListener('click', showConfirmationModal);
-        prevPageBtn.addEventListener('click', goToPrevPage);
-        nextPageBtn.addEventListener('click', goToNextPage);
+        
+        // Sonsuz scroll için event listener
+        window.addEventListener('scroll', handleScroll);
         
         // Modal Event Listeners
         allCategoriesBtn.addEventListener('click', openCategoriesModal);
@@ -2039,11 +1972,6 @@
                     // Özel durumlar için değişkenleri değiştir
                     if (key === 'favoritesCount') {
                         translatedText = translatedText.replace('{count}', favorites.length);
-                    } else if (key === 'pageInfo' && filteredProducts.length > 0) {
-                        translatedText = translatedText
-                            .replace('{current}', currentPage)
-                            .replace('{total}', totalPages)
-                            .replace('{count}', filteredProducts.length);
                     }
                     
                     if (element.tagName === 'INPUT') {
@@ -2221,7 +2149,7 @@
         function selectCategoryFromModal(category) {
             // Kategoriyi seç
             currentCategory = category;
-            currentPage = 1;
+            currentDisplayedCount = 0;
             
             // Tüm Kategoriler butonunu güncelle
             updateAllCategoriesButton();
@@ -2391,7 +2319,7 @@
                 document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
                 currentFilter = 'favorites';
-                currentPage = 1;
+                currentDisplayedCount = 0;
                 favoritesManagement.classList.add('show');
                 filterAndDisplayProducts();
             });
@@ -2421,23 +2349,15 @@
             // Sıralama
             applySorting(filteredProducts);
             
-            // Sayfa sayısını hesapla
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            
-            // Sayfalama kontrollerini göster/gizle
-            if (totalPages > 1) {
-                pagination.style.display = 'flex';
-            } else {
-                pagination.style.display = 'none';
-            }
-            
-            displayCurrentPage();
+            // İlk 50 ürünü göster
+            currentDisplayedCount = 0;
+            loadMoreProducts();
         }
 
         // Sıralama
         function handleSortChange() {
             currentSort = document.getElementById('sort-select').value;
-            currentPage = 1;
+            currentDisplayedCount = 0;
             filterAndDisplayProducts();
         }
 
@@ -2469,139 +2389,76 @@
             return match ? parseInt(match[0]) : 0;
         }
 
-        // Sayfalama fonksiyonları
-        function goToPrevPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                displayCurrentPage();
-            }
-        }
-
-        function goToNextPage() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                displayCurrentPage();
-            }
-        }
-
-        function goToPage(page) {
-            if (page >= 1 && page <= totalPages && page !== currentPage) {
-                currentPage = page;
-                displayCurrentPage();
-            }
-        }
-
-        // Mevcut sayfayı göster
-        function displayCurrentPage() {
-            const startIndex = (currentPage - 1) * productsPerPage;
-            const endIndex = startIndex + productsPerPage;
-            const productsToShow = filteredProducts.slice(startIndex, endIndex);
+        // Daha fazla ürün yükle
+        function loadMoreProducts() {
+            if (isLoading) return;
             
-            renderProducts(productsToShow);
-            updatePaginationControls();
-            updatePageInfo();
+            const startIndex = currentDisplayedCount;
+            const endIndex = Math.min(currentDisplayedCount + productsPerPage, filteredProducts.length);
             
-            // Sayfa başına scroll et (mobil için daha az scroll)
-            if (window.innerWidth > 768) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Mobil için daha az scroll yap
-                const heroSection = document.querySelector('.hero');
-                if (heroSection) {
-                    const heroBottom = heroSection.getBoundingClientRect().bottom + window.pageYOffset;
-                    window.scrollTo({ top: heroBottom - 20, behavior: 'smooth' });
+            if (startIndex >= filteredProducts.length) {
+                // Tüm ürünler yüklendi
+                endOfResults.style.display = 'block';
+                loadingIndicator.style.display = 'none';
+                return;
+            }
+            
+            isLoading = true;
+            loadingIndicator.style.display = 'block';
+            endOfResults.style.display = 'none';
+            
+            // Simüle edilmiş yükleme gecikmesi
+            setTimeout(() => {
+                const productsToShow = filteredProducts.slice(startIndex, endIndex);
+                
+                if (currentDisplayedCount === 0) {
+                    // İlk yükleme, tüm ürünleri temizle
+                    productsGrid.innerHTML = '';
                 }
-            }
-        }
-
-        // Sayfalama kontrollerini güncelle
-        function updatePaginationControls() {
-            // Önceki/Sonraki butonlarını güncelle
-            prevPageBtn.disabled = currentPage === 1;
-            nextPageBtn.disabled = currentPage === totalPages;
-            
-            if (currentPage === 1) {
-                prevPageBtn.classList.add('disabled');
-            } else {
-                prevPageBtn.classList.remove('disabled');
-            }
-            
-            if (currentPage === totalPages) {
-                nextPageBtn.classList.add('disabled');
-            } else {
-                nextPageBtn.classList.remove('disabled');
-            }
-            
-            // Sayfa numaralarını oluştur
-            pageNumbers.innerHTML = '';
-            
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-            
-            // İlk sayfa her zaman gösterilsin
-            if (startPage > 1) {
-                addPageButton(1);
-                if (startPage > 2) {
-                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
+                
+                renderProducts(productsToShow);
+                
+                currentDisplayedCount = endIndex;
+                isLoading = false;
+                loadingIndicator.style.display = 'none';
+                
+                // Tüm ürünler yüklendi mi kontrol et
+                if (currentDisplayedCount >= filteredProducts.length) {
+                    endOfResults.style.display = 'block';
                 }
-            }
-            
-            // Sayfa numaralarını ekle
-            for (let i = startPage; i <= endPage; i++) {
-                addPageButton(i);
-            }
-            
-            // Son sayfa her zaman gösterilsin
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
-                }
-                addPageButton(totalPages);
-            }
+            }, 500);
         }
 
-        function addPageButton(page) {
-            const button = document.createElement('button');
-            button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
-            button.textContent = page;
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                goToPage(page);
-            });
-            pageNumbers.appendChild(button);
-        }
-
-        // Sayfa bilgisini güncelle
-        function updatePageInfo() {
-            const startIndex = (currentPage - 1) * productsPerPage + 1;
-            const endIndex = Math.min(currentPage * productsPerPage, filteredProducts.length);
+        // Scroll işleyicisi
+        function handleScroll() {
+            if (isLoading) return;
             
-            if (translations[currentLanguage]) {
-                pageInfo.textContent = translations[currentLanguage].pageInfo
-                    .replace('{current}', currentPage)
-                    .replace('{total}', totalPages)
-                    .replace('{count}', filteredProducts.length);
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Sayfanın sonuna yaklaşıldığında daha fazla ürün yükle
+            if (scrollTop + windowHeight >= documentHeight - 500) {
+                loadMoreProducts();
             }
         }
 
         // Ürünleri render et
         function renderProducts(products) {
-            if (products.length === 0) {
+            if (products.length === 0 && currentDisplayedCount === 0) {
                 if (currentFilter === 'favorites') {
                     noFavorites.style.display = 'block';
                     productsGrid.style.display = 'none';
-                    pagination.style.display = 'none';
                 } else {
                     productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px;">${translations[currentLanguage].noProductsFound}</p>`;
-                    pagination.style.display = 'none';
                 }
+                loadingIndicator.style.display = 'none';
+                endOfResults.style.display = 'none';
                 return;
             }
 
             noFavorites.style.display = 'none';
             productsGrid.style.display = 'grid';
-            productsGrid.innerHTML = '';
 
             products.forEach(product => {
                 const isFavorite = favorites.includes(product.id);
@@ -2679,7 +2536,7 @@
             updateFavoritesUI();
             
             if (currentFilter === 'favorites') {
-                currentPage = 1;
+                currentDisplayedCount = 0;
                 filterAndDisplayProducts();
             }
         }
@@ -2694,7 +2551,7 @@
                 updateFavoritesUI();
                 
                 if (currentFilter === 'favorites') {
-                    currentPage = 1;
+                    currentDisplayedCount = 0;
                     filterAndDisplayProducts();
                 }
             }
@@ -2709,7 +2566,7 @@
                 closeConfirmationModal();
                 
                 if (currentFilter === 'favorites') {
-                    currentPage = 1;
+                    currentDisplayedCount = 0;
                     filterAndDisplayProducts();
                 }
             } else {
@@ -2763,7 +2620,7 @@
         function performSearch() {
             const term = document.getElementById('search-input').value.toLowerCase().trim();
             if (!term) {
-                currentPage = 1;
+                currentDisplayedCount = 0;
                 filterAndDisplayProducts();
                 return;
             }
@@ -2778,16 +2635,8 @@
             });
             
             filteredProducts = filtered;
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            currentPage = 1;
-            
-            if (totalPages > 1) {
-                pagination.style.display = 'flex';
-            } else {
-                pagination.style.display = 'none';
-            }
-            
-            displayCurrentPage();
+            currentDisplayedCount = 0;
+            loadMoreProducts();
         }
 
         function copyCode(code, event) {
@@ -2848,7 +2697,6 @@
         window.removeFavorite = removeFavorite;
         window.copyCode = copyCode;
         window.shareProduct = shareProduct;
-        window.goToPage = goToPage;
         window.toggleTitle = toggleTitle;
         window.openCategoriesModal = openCategoriesModal;
         window.closeCategoriesModal = closeCategoriesModal;
