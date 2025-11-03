@@ -302,10 +302,13 @@
             box-shadow: var(--shadow);
             margin-bottom: 15px;
             display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
         }
 
         .favorites-management.show {
-            display: block;
+            display: flex;
         }
 
         .clear-favorites-btn {
@@ -318,10 +321,141 @@
             font-weight: 600;
             transition: var(--transition);
             font-size: 0.8rem;
+            width: auto;
+            min-width: 120px;
         }
 
         .clear-favorites-btn:hover {
             background: var(--primary-dark);
+        }
+
+        #favorites-count {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Confirmation Modal */
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirmation-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .confirmation-modal.show .confirmation-content {
+            transform: translateY(0);
+        }
+
+        .confirmation-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--header-bg);
+            color: white;
+        }
+
+        .confirmation-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .confirmation-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .confirmation-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .confirmation-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .confirmation-message {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            min-width: 80px;
+        }
+
+        .confirm-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .cancel-btn {
+            background: var(--gray);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            min-width: 80px;
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
         }
 
         /* Products Grid */
@@ -983,6 +1117,44 @@
                 min-height: 36px;
             }
             
+            /* Favorites Management Responsive */
+            .favorites-management {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .clear-favorites-btn {
+                width: auto;
+                min-width: 120px;
+            }
+            
+            /* Confirmation Modal Responsive */
+            .confirmation-content {
+                max-width: 90%;
+            }
+            
+            .confirmation-header {
+                padding: 12px 15px;
+            }
+            
+            .confirmation-title {
+                font-size: 1rem;
+            }
+            
+            .confirmation-body {
+                padding: 15px;
+            }
+            
+            .confirmation-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .confirm-btn, .cancel-btn {
+                width: 100%;
+            }
+            
             /* Modal Responsive */
             .modal-content {
                 max-width: 90%;
@@ -1227,27 +1399,15 @@
             <p data-translate="loadingDescription">Excel dosyasından ürün bilgileri alınıyor. Lütfen bekleyin.</p>
         </div>
 
-        <!-- Favorites Management -->
-        <div class="favorites-management" id="favorites-management">
-            <div class="favorites-actions">
-                <button class="clear-favorites-btn" id="clear-all-favorites" data-translate="clearAllFavorites">
-                    Tüm Favorileri Temizle
-                </button>
-            </div>
-            <div id="favorites-count" data-translate="favoritesCount">
-                Toplam 0 favori ürün
-            </div>
-        </div>
-
         <!-- Main Content -->
         <div id="main-content" style="display: none;">
             <!-- Categories - Tüm Kategoriler, Favoriler ve Sırala butonları -->
             <div class="categories" id="categories">
                 <button class="category-btn active" data-category="all" id="all-categories-btn">
-                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
+                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (<span id="all-categories-count">0</span>)
                 </button>
                 <button class="category-btn" data-filter="favorites" id="favorites-filter-btn">
-                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span>
+                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span> (<span id="favorites-count-badge">0</span>)
                 </button>
                 <select class="sort-select" id="sort-select">
                     <option value="default" data-translate="sortDefault">Sırala</option>
@@ -1256,6 +1416,16 @@
                     <option value="discount" data-translate="sortDiscount">İndirim</option>
                     <option value="rating" data-translate="sortRating">Puan</option>
                 </select>
+            </div>
+
+            <!-- Favorites Management -->
+            <div class="favorites-management" id="favorites-management">
+                <div id="favorites-count" data-translate="favoritesCount">
+                    Toplam 0 favori ürün
+                </div>
+                <button class="clear-favorites-btn" id="clear-all-favorites" data-translate="clearAllFavorites">
+                    Tüm Favorileri Temizle
+                </button>
             </div>
 
             <!-- Products Grid -->
@@ -1334,6 +1504,25 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmation-modal">
+        <div class="confirmation-content">
+            <div class="confirmation-header">
+                <h3 class="confirmation-title" data-translate="confirmationTitle">Emin misiniz?</h3>
+                <button class="confirmation-close" id="confirmation-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="confirmation-body">
+                <p class="confirmation-message" data-translate="confirmationMessage">Tüm favori ürünlerinizi temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+                <div class="confirmation-actions">
+                    <button class="cancel-btn" id="cancel-clear" data-translate="cancelButton">Hayır</button>
+                    <button class="confirm-btn" id="confirm-clear" data-translate="confirmButton">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Çeviriler - Mobil için kısaltılmış
         const translations = {
@@ -1384,7 +1573,11 @@
                 prevPage: "←",
                 nextPage: "→",
                 pageInfo: "S. {current}/{total} - {count} ürün",
-                loadingPage: "Yükleniyor..."
+                loadingPage: "Yükleniyor...",
+                confirmationTitle: "Emin misiniz?",
+                confirmationMessage: "Tüm favori ürünlerinizi temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+                cancelButton: "Hayır",
+                confirmButton: "Evet"
             },
             en: {
                 siteTitle: "Budget Buddy",
@@ -1433,7 +1626,11 @@
                 prevPage: "←",
                 nextPage: "→",
                 pageInfo: "P. {current}/{total} - {count} products",
-                loadingPage: "Loading..."
+                loadingPage: "Loading...",
+                confirmationTitle: "Are you sure?",
+                confirmationMessage: "Are you sure you want to clear all your favorite products? This action cannot be undone.",
+                cancelButton: "No",
+                confirmButton: "Yes"
             },
             es: {
                 siteTitle: "Budget Buddy",
@@ -1482,7 +1679,11 @@
                 prevPage: "←",
                 nextPage: "→",
                 pageInfo: "P. {current}/{total} - {count} productos",
-                loadingPage: "Cargando..."
+                loadingPage: "Cargando...",
+                confirmationTitle: "¿Estás seguro?",
+                confirmationMessage: "¿Estás seguro de que quieres eliminar todos tus productos favoritos? Esta acción no se puede deshacer.",
+                cancelButton: "No",
+                confirmButton: "Sí"
             },
             fr: {
                 siteTitle: "Budget Buddy",
@@ -1531,7 +1732,11 @@
                 prevPage: "←",
                 nextPage: "→",
                 pageInfo: "P. {current}/{total} - {count} produits",
-                loadingPage: "Chargement..."
+                loadingPage: "Chargement...",
+                confirmationTitle: "Êtes-vous sûr ?",
+                confirmationMessage: "Êtes-vous sûr de vouloir supprimer tous vos produits favoris ? Cette action ne peut pas être annulée.",
+                cancelButton: "Non",
+                confirmButton: "Oui"
             }
         };
 
@@ -1575,6 +1780,13 @@
         const categoriesModalList = document.getElementById('categories-modal-list');
         const modalClose = document.getElementById('modal-close');
         const allCategoriesBtn = document.getElementById('all-categories-btn');
+        const favoritesFilterBtn = document.getElementById('favorites-filter-btn');
+
+        // Confirmation Modal Elements
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const confirmationClose = document.getElementById('confirmation-close');
+        const cancelClearBtn = document.getElementById('cancel-clear');
+        const confirmClearBtn = document.getElementById('confirm-clear');
 
         // Excel URL
         const EXCEL_FILE_URL = './linkler.xls';
@@ -1720,7 +1932,7 @@
         document.getElementById('sort-select').addEventListener('change', handleSortChange);
         document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
         document.getElementById('language-btn').addEventListener('click', toggleLanguageDropdown);
-        document.getElementById('clear-all-favorites').addEventListener('click', clearAllFavorites);
+        document.getElementById('clear-all-favorites').addEventListener('click', showConfirmationModal);
         prevPageBtn.addEventListener('click', goToPrevPage);
         nextPageBtn.addEventListener('click', goToNextPage);
         
@@ -1733,10 +1945,25 @@
             }
         });
         
+        // Confirmation Modal Event Listeners
+        confirmationClose.addEventListener('click', closeConfirmationModal);
+        cancelClearBtn.addEventListener('click', closeConfirmationModal);
+        confirmClearBtn.addEventListener('click', clearAllFavorites);
+        confirmationModal.addEventListener('click', function(e) {
+            if (e.target === confirmationModal) {
+                closeConfirmationModal();
+            }
+        });
+        
         // ESC tuşu ile modal kapatma
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && categoriesModal.classList.contains('show')) {
-                closeCategoriesModal();
+            if (e.key === 'Escape') {
+                if (categoriesModal.classList.contains('show')) {
+                    closeCategoriesModal();
+                }
+                if (confirmationModal.classList.contains('show')) {
+                    closeConfirmationModal();
+                }
             }
         });
 
@@ -1876,6 +2103,22 @@
             setTimeout(() => copyMsg.style.display = "none", 1300);
         }
 
+        // Onay modalını göster
+        function showConfirmationModal() {
+            if (favorites.length === 0) {
+                showToast(currentLanguage === 'tr' ? 'Favori ürün bulunmuyor!' : 'No favorite products found!');
+                return;
+            }
+            confirmationModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Onay modalını kapat
+        function closeConfirmationModal() {
+            confirmationModal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
         // Kategori tahmini yap
         function predictCategory(productTitle) {
             const title = productTitle.toLowerCase();
@@ -1981,15 +2224,45 @@
             currentPage = 1;
             
             // Tüm Kategoriler butonunu güncelle
-            allCategoriesBtn.textContent = category === 'all' 
-                ? `${translations[currentLanguage].allCategories} (${allProducts.length})`
-                : `${category} (${getCategoryCount(category)})`;
+            updateAllCategoriesButton();
             
             // Modal'ı kapat
             closeCategoriesModal();
             
+            // Favori filtresini kapat
+            currentFilter = 'all';
+            favoritesManagement.classList.remove('show');
+            
+            // Tüm Kategoriler butonunu aktif yap
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            allCategoriesBtn.classList.add('active');
+            
             // Ürünleri filtrele ve göster
             filterAndDisplayProducts();
+        }
+
+        // Tüm Kategoriler butonunu güncelle
+        function updateAllCategoriesButton() {
+            const count = currentCategory === 'all' 
+                ? allProducts.length 
+                : allProducts.filter(p => p.category === currentCategory).length;
+            
+            allCategoriesBtn.innerHTML = `
+                <i class="fas fa-th-large"></i> 
+                <span data-translate="allCategories">${currentCategory === 'all' ? translations[currentLanguage].allCategories : currentCategory}</span> 
+                (${count})
+            `;
+            
+            // Çeviriyi tekrar uygula
+            const span = allCategoriesBtn.querySelector('span[data-translate]');
+            if (span && translations[currentLanguage]) {
+                const key = span.getAttribute('data-translate');
+                if (translations[currentLanguage][key]) {
+                    span.textContent = currentCategory === 'all' 
+                        ? translations[currentLanguage][key] 
+                        : currentCategory;
+                }
+            }
         }
 
         // Kategori sayısını al
@@ -2096,10 +2369,10 @@
             // Tüm Kategoriler, Favoriler ve Sırala butonlarını göster
             categoriesContainer.innerHTML = `
                 <button class="category-btn active" data-category="all" id="all-categories-btn">
-                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (${allProducts.length})
+                    <i class="fas fa-th-large"></i> <span data-translate="allCategories">Tüm Kategoriler</span> (<span id="all-categories-count">${allProducts.length}</span>)
                 </button>
                 <button class="category-btn" data-filter="favorites" id="favorites-filter-btn">
-                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span>
+                    <i class="fas fa-heart"></i> <span data-translate="filterFavorites">Favoriler</span> (<span id="favorites-count-badge">${favorites.length}</span>)
                 </button>
                 <select class="sort-select" id="sort-select">
                     <option value="default" data-translate="sortDefault">Sırala</option>
@@ -2420,16 +2693,27 @@
                 localStorage.setItem('favorites', JSON.stringify(favorites));
                 showToast(translations[currentLanguage].allFavoritesCleared);
                 updateFavoritesUI();
+                closeConfirmationModal();
                 
                 if (currentFilter === 'favorites') {
                     currentPage = 1;
                     filterAndDisplayProducts();
                 }
+            } else {
+                closeConfirmationModal();
+                showToast(currentLanguage === 'tr' ? 'Favori ürün bulunmuyor!' : 'No favorite products found!');
             }
         }
 
         function updateFavoritesUI() {
             updateFavoritesCount();
+            
+            // Favori sayısını badge'de güncelle
+            const favoritesBadge = document.getElementById('favorites-count-badge');
+            if (favoritesBadge) {
+                favoritesBadge.textContent = favorites.length;
+            }
+            
             const favoriteButtons = document.querySelectorAll('.wishlist-btn');
             favoriteButtons.forEach(btn => {
                 const productCard = btn.closest('.product-card');
@@ -2556,6 +2840,8 @@
         window.openCategoriesModal = openCategoriesModal;
         window.closeCategoriesModal = closeCategoriesModal;
         window.selectCategoryFromModal = selectCategoryFromModal;
+        window.showConfirmationModal = showConfirmationModal;
+        window.closeConfirmationModal = closeConfirmationModal;
 
         // Ürün çevirileri
         const productTranslations = {
