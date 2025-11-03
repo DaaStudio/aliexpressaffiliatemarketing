@@ -1561,6 +1561,209 @@
             }
         };
 
+        // Kategori anahtar kelimeleri
+        const categoryKeywords = {
+            'Automotive & Motorcycle': [
+                'car', 'auto', 'automotive', 'motorcycle', 'bike', 'vehicle', 'tire', 'wheel', 'engine', 
+                'brake', 'exhaust', 'headlight', 'taillight', 'mirror', 'seat', 'helmet', 'gloves', 
+                'jacket', 'oil', 'filter', 'battery', 'charger', 'tool', 'accessory', 'parts', 'gps',
+                'dash cam', 'car camera', 'car audio', 'speaker', 'subwoofer', 'amplifier', 'alarm',
+                'lock', 'cover', 'mat', 'cleaner', 'polish', 'wax', 'detailing', 'maintenance',
+                'motor', 'scooter', 'atv', 'quad', 'spare', 'replacement', 'turbo', 'supercharger',
+                'suspension', 'shock', 'absorber', 'clutch', 'transmission', 'differential', 'axle'
+            ],
+            'Beauty & Health': [
+                'makeup', 'cosmetic', 'skincare', 'beauty', 'health', 'facial', 'cream', 'lotion', 
+                'serum', 'moisturizer', 'cleanser', 'toner', 'mask', 'makeup brush', 'palette', 
+                'lipstick', 'mascara', 'eyeshadow', 'foundation', 'concealer', 'blush', 'highlighter',
+                'perfume', 'fragrance', 'deodorant', 'shampoo', 'conditioner', 'hair care', 'styling',
+                'hair dryer', 'straightener', 'curler', 'trimmer', 'shaver', 'epilator', 'massager',
+                'scale', 'thermometer', 'blood pressure', 'fitness', 'vitamin', 'supplement',
+                'eyeliner', 'eyebrow', 'contour', 'primer', 'setting spray', 'makeup remover',
+                'face wash', 'body wash', 'sunscreen', 'tanning', 'self tan', 'nail', 'manicure'
+            ],
+            'Phones & Telecommunications': [
+                'smartphone', 'phone', 'mobile', 'iphone', 'samsung', 'huawei', 'xiaomi', 'oppo', 
+                'vivo', 'oneplus', 'android', 'ios', '5g', '4g', 'case', 'cover', 'screen protector',
+                'charger', 'cable', 'adapter', 'power bank', 'headphone', 'earphone', 'earbud', 
+                'bluetooth', 'wireless', 'smartwatch', 'watch', 'tablet', 'ipad', 'accessory',
+                'sim card', 'router', 'modem', 'antenna', 'repeater', 'telecommunication',
+                'phone holder', 'car mount', 'selfie stick', 'tripod', 'gimbal', 'stabilizer',
+                'signal booster', 'voip', 'walkie talkie', 'radio', 'communication'
+            ],
+            'Home Improvement & Lighting': [
+                'home improvement', 'lighting', 'lamp', 'light', 'led', 'bulb', 'fixture', 'ceiling',
+                'wall', 'floor', 'desk', 'outdoor', 'garden', 'solar', 'motion', 'sensor', 'switch',
+                'outlet', 'extension', 'cord', 'tool', 'drill', 'saw', 'hammer', 'screwdriver',
+                'wrench', 'pliers', 'tape', 'measure', 'level', 'paint', 'brush', 'roller', 'toolbox',
+                'ladder', 'safety', 'workwear', 'storage', 'shelf', 'rack', 'organization',
+                'power tool', 'hand tool', 'air tool', 'garden tool', 'lawn', 'sprinkler', 'hose'
+            ],
+            'Jewelry, Watches & Accessories': [
+                'jewelry', 'watch', 'accessory', 'necklace', 'bracelet', 'ring', 'earring', 'pendant',
+                'chain', 'bangle', 'anklet', 'brooch', 'cufflink', 'tie clip', 'money clip', 'keychain',
+                'sunglasses', 'glasses', 'case', 'luxury', 'fashion', 'diamond', 'gold', 'silver',
+                'platinum', 'pearl', 'crystal', 'gemstone', 'birthstone', 'engraving', 'personalized',
+                'smart watch', 'fitness tracker', 'activity band', 'watch band', 'strap',
+                'charm', 'locket', 'toe ring', 'body jewelry', 'piercing', 'nose ring', 'belly ring'
+            ],
+            'Women\'s Clothing': [
+                'women', 'clothing', 'dress', 'skirt', 'blouse', 'shirt', 'top', 't-shirt', 'sweater',
+                'cardigan', 'jacket', 'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings',
+                'shorts', 'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
+                'bikini', 'swimsuit', 'cover up', 'activewear', 'yoga', 'fitness', 'workout', 'socks',
+                'tights', 'stockings', 'maternity', 'plus size', 'petite', 'fashion', 'trendy',
+                'evening dress', 'cocktail dress', 'wedding dress', 'prom dress', 'formal', 'casual'
+            ],
+            'Electronics': [
+                'electronics', 'electronic', 'gadget', 'device', 'tech', 'technology', 'smart', 'home',
+                'audio', 'video', 'tv', 'television', 'monitor', 'display', 'projector', 'speaker',
+                'soundbar', 'headphone', 'earphone', 'microphone', 'camera', 'lens', 'drone', 'action',
+                'gopro', 'tripod', 'gimbal', 'stabilizer', 'computer', 'laptop', 'tablet', 'printer',
+                'scanner', 'keyboard', 'mouse', 'webcam', 'router', 'nas', 'storage', 'hard drive',
+                'ssd', 'memory', 'ram', 'processor', 'motherboard', 'graphics card', 'power supply'
+            ],
+            'Men\'s Clothing': [
+                'men', 'clothing', 'shirt', 't-shirt', 'polo', 'button down', 'dress shirt', 'casual',
+                'sweater', 'hoodie', 'sweatshirt', 'jacket', 'coat', 'blazer', 'suit', 'pants', 'jeans',
+                'chinos', 'shorts', 'swimwear', 'trunks', 'underwear', 'boxers', 'briefs', 'socks',
+                'tie', 'belt', 'wallet', 'accessory', 'workwear', 'uniform', 'activewear', 'fitness',
+                'outdoor', 'hiking', 'fishing', 'hunting', 'formal', 'business', 'casual', 'streetwear',
+                'denim', 'cargo', 'khaki', 'linen', 'wool', 'leather', 'raincoat', 'windbreaker'
+            ],
+            'Home & Garden': [
+                'home', 'garden', 'furniture', 'decor', 'decoration', 'accessory', 'kitchen', 'bath',
+                'bedroom', 'living', 'dining', 'outdoor', 'patio', 'lawn', 'plant', 'flower', 'pot',
+                'vase', 'candle', 'diffuser', 'wall art', 'picture', 'frame', 'clock', 'mirror',
+                'rug', 'carpet', 'mat', 'curtain', 'blind', 'shade', 'pillow', 'cushion', 'blanket',
+                'throw', 'bedding', 'sheet', 'duvet', 'comforter', 'quilt', 'towel', 'bath mat',
+                'bbq', 'grill', 'fire pit', 'fountain', 'bird feeder', 'greenhouse', 'gardening'
+            ],
+            'Toys & Games': [
+                'toy', 'game', 'kids', 'children', 'baby', 'educational', 'learning', 'development',
+                'puzzle', 'building', 'block', 'lego', 'brick', 'doll', 'action figure', 'vehicle',
+                'car', 'truck', 'plane', 'train', 'robot', 'rc', 'remote control', 'drone', 'helicopter',
+                'board game', 'card game', 'puzzle game', 'video game', 'console', 'controller',
+                'vr', 'virtual reality', 'outdoor', 'playground', 'swing', 'slide', 'trampoline',
+                'stuffed animal', 'plush', 'puzzle', 'construction', 'model kit', 'science kit'
+            ],
+            'Luggage, Bags & Shoes': [
+                'luggage', 'bag', 'shoe', 'travel', 'suitcase', 'backpack', 'handbag', 'purse',
+                'wallet', 'briefcase', 'messenger', 'tote', 'duffel', 'garment', 'cosmetic', 'laptop',
+                'sneaker', 'athletic', 'running', 'walking', 'hiking', 'boot', 'dress', 'casual',
+                'sandals', 'flip flop', 'slipper', 'heel', 'pump', 'flat', 'loafer', 'oxford',
+                'accessory', 'organizer', 'packing', 'travel gear', 'luggage tag', 'lock',
+                'crossbody', 'clutch', 'evening bag', 'beach bag', 'gym bag', 'sports bag'
+            ],
+            'Furniture': [
+                'furniture', 'furnishing', 'table', 'desk', 'chair', 'sofa', 'couch', 'loveseat',
+                'sectional', 'recliner', 'ottoman', 'bench', 'stool', 'bed', 'mattress', 'headboard',
+                'dresser', 'chest', 'wardrobe', 'armoire', 'cabinet', 'shelf', 'bookcase', 'entertainment',
+                'tv stand', 'console', 'coffee', 'end', 'nightstand', 'dining', 'kitchen', 'bar',
+                'counter', 'island', 'patio', 'garden', 'outdoor', 'office', 'ergonomic', 'gaming',
+                'kids furniture', 'nursery', 'baby crib', 'changing table', 'rocking chair'
+            ],
+            'Computer, Office & Education': [
+                'computer', 'office', 'education', 'laptop', 'desktop', 'monitor', 'keyboard', 'mouse',
+                'printer', 'scanner', 'copier', 'fax', 'projector', 'screen', 'whiteboard', 'desk',
+                'chair', 'filing', 'cabinet', 'shelf', 'organizer', 'supply', 'pen', 'pencil', 'marker',
+                'highlighter', 'notebook', 'binder', 'folder', 'calculator', 'ruler', 'stapler',
+                'staple', 'tape', 'glue', 'scissors', 'educational', 'learning', 'teaching', 'science',
+                'math', 'language', 'art', 'craft', 'stationery', 'envelope', 'paper', 'ink', 'toner'
+            ],
+            'Hair Extensions & Wigs': [
+                'hair', 'extension', 'wig', 'toupee', 'weave', 'clip-in', 'tape-in', 'fusion',
+                'micro', 'strand', 'bundle', 'closure', 'frontal', 'lace', 'synthetic', 'human',
+                'remy', 'virgin', 'straight', 'wavy', 'curly', 'kinky', 'color', 'dye', 'highlight',
+                'ombre', 'balayage', 'styling', 'care', 'shampoo', 'conditioner', 'treatment',
+                'brush', 'comb', 'dryer', 'iron', 'curler', 'accessory', 'cap', 'stand',
+                'hair piece', 'fall', 'ponytail', 'bun', 'chignon', 'hair loss', 'thinning'
+            ],
+            'Sports & Entertainment': [
+                'sports', 'entertainment', 'fitness', 'exercise', 'workout', 'gym', 'yoga', 'pilates',
+                'running', 'walking', 'hiking', 'camping', 'fishing', 'hunting', 'cycling', 'biking',
+                'swimming', 'diving', 'surfing', 'skiing', 'snowboarding', 'skateboarding', 'roller',
+                'team', 'soccer', 'basketball', 'football', 'baseball', 'tennis', 'golf', 'badminton',
+                'music', 'instrument', 'guitar', 'piano', 'keyboard', 'drum', 'violin', 'microphone',
+                'karaoke', 'dj', 'lighting', 'effect', 'party', 'event', 'game', 'console',
+                'fitness equipment', 'treadmill', 'exercise bike', 'elliptical', 'weight', 'dumbbell'
+            ],
+            'Baby & Maternity': [
+                'baby', 'maternity', 'infant', 'toddler', 'child', 'newborn', 'pregnancy', 'mother',
+                'nursery', 'crib', 'bassinet', 'bed', 'mattress', 'changing', 'table', 'dresser',
+                'storage', 'organizer', 'stroller', 'pram', 'carrier', 'sling', 'car seat', 'high chair',
+                'booster', 'bath', 'tub', 'toy', 'educational', 'development', 'clothing', 'onesie',
+                'romper', 'sleepwear', 'blanket', 'swaddle', 'feeding', 'bottle', 'pacifier', 'health',
+                'baby monitor', 'thermometer', 'nasal aspirator', 'grooming', 'nail clipper'
+            ],
+            'Plus Sized Clothing': [
+                'plus size', 'plus sized', 'curvy', 'big', 'tall', 'women', 'men', 'clothing',
+                'dress', 'top', 'blouse', 'shirt', 't-shirt', 'sweater', 'cardigan', 'jacket',
+                'coat', 'hoodie', 'sweatshirt', 'pants', 'jeans', 'leggings', 'shorts', 'skirt',
+                'jumpsuit', 'romper', 'lingerie', 'bra', 'panties', 'shapewear', 'swimwear',
+                'activewear', 'fitness', 'workout', 'fashion', 'trendy', 'stylish', 'comfort',
+                'full figure', 'queen size', 'extended size', 'oversize', 'baggy', 'loose fit'
+            ],
+            'Pet Supplies': [
+                'pet', 'supply', 'dog', 'cat', 'puppy', 'kitten', 'food', 'treat', 'snack', 'bowl',
+                'feeder', 'waterer', 'fountain', 'bed', 'mat', 'crate', 'cage', 'carrier', 'house',
+                'shelter', 'toy', 'chew', 'bone', 'ball', 'frisbee', 'leash', 'collar', 'harness',
+                'clothing', 'costume', 'grooming', 'brush', 'comb', 'shampoo', 'conditioner', 'health',
+                'vitamin', 'supplement', 'medicine', 'first aid', 'cleaning', 'litter', 'box', 'training',
+                'bird', 'fish', 'reptile', 'small animal', 'rabbit', 'hamster', 'guinea pig'
+            ],
+            'Tools & Hardware': [
+                'tool', 'hardware', 'drill', 'saw', 'hammer', 'screwdriver', 'wrench', 'pliers',
+                'socket', 'ratchet', 'toolbox', 'tool set', 'power tool', 'cordless', 'battery',
+                'air tool', 'pneumatic', 'hand tool', 'garden tool', 'lawn tool', 'measuring',
+                'level', 'tape measure', 'laser level', 'safety', 'glove', 'goggle', 'mask',
+                'fastener', 'screw', 'bolt', 'nut', 'washer', 'anchor', 'nail', 'bracket', 'hinge'
+            ],
+            'Home Appliances': [
+                'appliance', 'refrigerator', 'fridge', 'freezer', 'oven', 'stove', 'cooktop',
+                'microwave', 'dishwasher', 'washing machine', 'dryer', 'vacuum', 'cleaner',
+                'air conditioner', 'heater', 'fan', 'dehumidifier', 'humidifier', 'water purifier',
+                'blender', 'mixer', 'food processor', 'toaster', 'coffee maker', 'kettle', 'iron',
+                'steamer', 'air fryer', 'pressure cooker', 'slow cooker', 'rice cooker', 'grill'
+            ],
+            'Office Supplies': [
+                'office supply', 'stationery', 'pen', 'pencil', 'marker', 'highlighter', 'notebook',
+                'binder', 'folder', 'file', 'organizer', 'desk', 'chair', 'lamp', 'calendar',
+                'planner', 'sticky note', 'paper', 'envelope', 'label', 'tape', 'glue', 'staple',
+                'stapler', 'scissors', 'ruler', 'calculator', 'whiteboard', 'bulletin board'
+            ],
+            'Camera & Photo': [
+                'camera', 'photo', 'photography', 'dslr', 'mirrorless', 'lens', 'tripod', 'flash',
+                'memory card', 'sd card', 'battery', 'charger', 'bag', 'case', 'filter', 'adapter',
+                'drone', 'action camera', 'gopro', 'webcam', 'camera strap', 'cleaning kit'
+            ],
+            'Video Games': [
+                'video game', 'game console', 'playstation', 'xbox', 'nintendo', 'switch', 'pc game',
+                'controller', 'joystick', 'headset', 'gaming chair', 'mouse', 'keyboard', 'monitor',
+                'vr headset', 'virtual reality', 'gamepad', 'steering wheel', 'flight stick'
+            ],
+            'Musical Instruments': [
+                'musical instrument', 'guitar', 'piano', 'keyboard', 'drum', 'violin', 'viola',
+                'cello', 'bass', 'saxophone', 'trumpet', 'flute', 'clarinet', 'microphone',
+                'amplifier', 'speaker', 'mixer', 'headphone', 'earphone', 'metronome', 'tuner'
+            ],
+            'Arts & Crafts': [
+                'art', 'craft', 'painting', 'drawing', 'sketch', 'canvas', 'paint', 'brush',
+                'pencil', 'marker', 'clay', 'sculpture', 'knitting', 'crochet', 'sewing',
+                'embroidery', 'bead', 'jewelry making', 'scrapbook', 'paper craft', 'model'
+            ],
+            'Party Supplies': [
+                'party', 'celebration', 'balloon', 'decoration', 'banner', 'confetti', 'streamer',
+                'tableware', 'plate', 'cup', 'napkin', 'cutlery', 'candle', 'light', 'costume',
+                'mask', 'hat', 'noisemaker', 'invitation', 'favor', 'gift bag', 'wrap'
+            ],
+            'Industrial & Scientific': [
+                'industrial', 'scientific', 'lab', 'laboratory', 'microscope', 'telescope',
+                'measurement', 'sensor', 'control', 'automation', 'robot', '3d printer',
+                'safety equipment', 'protective gear', 'workwear', 'uniform'
+            ]
+        };
+
         // Global değişkenler
         let allProducts = [];
         const productsPerPage = 50;
@@ -1792,6 +1995,37 @@
             document.body.style.overflow = '';
         }
 
+        // Kategori belirleme fonksiyonu
+        function determineCategory(product) {
+            const title = product.title.toLowerCase();
+            const description = (product.description || '').toLowerCase();
+            
+            let bestMatch = 'Diğer';
+            let highestScore = 0;
+            
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                let score = 0;
+                
+                for (const keyword of keywords) {
+                    if (title.includes(keyword.toLowerCase()) || description.includes(keyword.toLowerCase())) {
+                        score += 1;
+                        // Anahtar kelime başlangıçta ise ekstra puan
+                        if (title.startsWith(keyword.toLowerCase())) {
+                            score += 2;
+                        }
+                    }
+                }
+                
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = category;
+                }
+            }
+            
+            // Eğer hiç eşleşme yoksa veya çok düşükse "Diğer" kategorisi
+            return highestScore > 0 ? bestMatch : 'Diğer';
+        }
+
         // Modal için kategori listesini oluştur
         function renderCategoriesModal() {
             if (!allProducts || allProducts.length === 0) return;
@@ -1802,8 +2036,8 @@
                 categoryCounts[category] = (categoryCounts[category] || 0) + 1;
             });
             
-            // Dinamik kategoriler oluştur
-            const categories = ['all', ...Object.keys(categoryCounts).sort()];
+            // Kategorileri ürün sayısına göre sırala
+            const categories = ['all', ...Object.keys(categoryCounts).sort((a, b) => categoryCounts[b] - categoryCounts[a])];
             
             categoriesModalList.innerHTML = categories.map(category => {
                 let count, displayName;
@@ -1878,30 +2112,27 @@
                 
                 // Test ürünleri oluştur
                 const testProducts = [];
-                const categories = [
-                    'Automotive & Motorcycle', 'Beauty & Health', 'Phones & Telecommunications',
-                    'Home Improvement & Lighting', 'Jewelry, Watches & Accessories', 'Women\'s Clothing',
-                    'Electronics', 'Men\'s Clothing', 'Home & Garden', 'Toys & Games',
-                    'Luggage, Bags & Shoes', 'Furniture', 'Computer, Office & Education',
-                    'Hair Extensions & Wigs', 'Sports & Entertainment', 'Baby & Maternity'
-                ];
+                const categories = Object.keys(categoryKeywords);
                 
-                for (let i = 1; i <= 250; i++) {
-                    const category = categories[Math.floor(Math.random() * categories.length)];
+                for (let i = 1; i <= 300; i++) {
+                    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+                    const keywords = categoryKeywords[randomCategory];
+                    const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+                    
                     const discount = Math.floor(Math.random() * 50) + 10;
                     const originalPrice = Math.floor(Math.random() * 1000) + 100;
                     const discountPrice = Math.floor(originalPrice * (100 - discount) / 100);
                     
                     testProducts.push({
                         id: i.toString(),
-                        title: `Ürün ${i} - Premium Quality ${category} Product`,
+                        title: `Premium ${randomKeyword} Product ${i} - High Quality ${randomCategory}`,
                         image: `https://via.placeholder.com/300x200/${Math.floor(Math.random()*16777215).toString(16)}/FFFFFF?text=Ürün+${i}`,
                         originalPrice: `₺${originalPrice}`,
                         discountPrice: `₺${discountPrice}`,
                         discount: `%${discount}`,
                         code: `CODE${i}`,
                         link: '#',
-                        category: category,
+                        category: randomCategory,
                         rating: (Math.random() * 10 + 85).toFixed(0),
                         sales: Math.floor(Math.random() * 2000) + 100
                     });
@@ -1928,7 +2159,7 @@
                                     discount: item.Discount || item.discount || '%0',
                                     code: item['Code Name'] || item.code || '',
                                     link: item['Promotion Url'] || item.link || '#',
-                                    category: item.Category || item.category || 'Diğer',
+                                    category: item.Category || determineCategory(item) || 'Diğer',
                                     rating: item['Positive Feedback'] || item.rating || '0',
                                     sales: item.Sales180Day || item.sales || '0'
                                 };
