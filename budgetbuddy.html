@@ -3176,27 +3176,27 @@
             return match ? parseInt(match[0]) : 0;
         }
 
-        // Sayfalama fonksiyonları
-        function goToPrevPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                displayCurrentPage();
-            }
-        }
+				// Sayfalama fonksiyonları
+		function goToPrevPage() {
+			if (currentPage > 1) {
+				currentPage--;
+				filterAndDisplayProducts();
+			}
+		}
 
-        function goToNextPage() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                displayCurrentPage();
-            }
-        }
+		function goToNextPage() {
+			if (currentPage < totalPages) {
+				currentPage++;
+				filterAndDisplayProducts();
+			}
+		}
 
-        function goToPage(page) {
-            if (page >= 1 && page <= totalPages) {
-                currentPage = page;
-                displayCurrentPage();
-            }
-        }
+		function goToPage(page) {
+			if (page >= 1 && page <= totalPages && page !== currentPage) {
+				currentPage = page;
+				filterAndDisplayProducts();
+			}
+		}
 
         // Mevcut sayfayı göster
         function displayCurrentPage() {
@@ -3212,59 +3212,76 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Sayfalama kontrollerini güncelle
-        function updatePaginationControls() {
-            // Önceki/Sonraki butonlarını güncelle
-            prevPageBtn.disabled = currentPage === 1;
-            nextPageBtn.disabled = currentPage === totalPages;
+			   // Sayfalama kontrollerini güncelle
+		function updatePaginationControls() {
+			// Önceki/Sonraki butonlarını güncelle
+			prevPageBtn.disabled = currentPage === 1;
+			nextPageBtn.disabled = currentPage === totalPages;
+			
+			if (currentPage === 1) {
+				prevPageBtn.classList.add('disabled');
+			} else {
+				prevPageBtn.classList.remove('disabled');
+			}
+			
+			if (currentPage === totalPages) {
+				nextPageBtn.classList.add('disabled');
+			} else {
+				nextPageBtn.classList.remove('disabled');
+			}
             
-            if (currentPage === 1) {
-                prevPageBtn.classList.add('disabled');
-            } else {
-                prevPageBtn.classList.remove('disabled');
-            }
-            
-            if (currentPage === totalPages) {
-                nextPageBtn.classList.add('disabled');
-            } else {
-                nextPageBtn.classList.remove('disabled');
-            }
-            
-            // Sayfa numaralarını oluştur
-            pageNumbers.innerHTML = '';
-            
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-            
-            // İlk sayfa her zaman gösterilsin
-            if (startPage > 1) {
-                addPageButton(1);
-                if (startPage > 2) {
-                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
-                }
-            }
-            
-            // Sayfa numaralarını ekle
-            for (let i = startPage; i <= endPage; i++) {
-                addPageButton(i);
-            }
-            
-            // Son sayfa her zaman gösterilsin
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
-                }
-                addPageButton(totalPages);
-            }
-        }
+					// Sayfa numaralarını oluştur
+			pageNumbers.innerHTML = '';
+			
+			let startPage = Math.max(1, currentPage - 2);
+			let endPage = Math.min(totalPages, currentPage + 2);
+			
+			// İlk sayfa her zaman gösterilsin
+			if (startPage > 1) {
+				addPageButton(1);
+				if (startPage > 2) {
+					pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
+				}
+			}
+			
+			// Sayfa numaralarını ekle
+			for (let i = startPage; i <= endPage; i++) {
+				addPageButton(i);
+			}
+			
+			// Son sayfa her zaman gösterilsin
+			if (endPage < totalPages) {
+				if (endPage < totalPages - 1) {
+					pageNumbers.innerHTML += '<span class="pagination-dots">...</span>';
+				}
+				addPageButton(totalPages);
+			}
+		}
 
-        function addPageButton(page) {
-            const button = document.createElement('button');
-            button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
-            button.textContent = page;
-            button.addEventListener('click', () => goToPage(page));
-            pageNumbers.appendChild(button);
-        }
+				function addPageButton(page) {
+			const button = document.createElement('button');
+			button.className = `pagination-btn ${page === currentPage ? 'active' : ''}`;
+			button.textContent = page;
+			button.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				goToPage(page);
+			});
+			pageNumbers.appendChild(button);
+		}
+				// Mevcut sayfayı göster
+		function displayCurrentPage() {
+			const startIndex = (currentPage - 1) * productsPerPage;
+			const endIndex = startIndex + productsPerPage;
+			const productsToShow = filteredProducts.slice(startIndex, endIndex);
+			
+			renderProducts(productsToShow);
+			updatePaginationControls();
+			updatePageInfo();
+			
+			// Sayfa başına scroll et
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
 
         // Sayfa bilgisini güncelle
         function updatePageInfo() {
